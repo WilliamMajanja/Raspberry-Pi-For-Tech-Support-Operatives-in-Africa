@@ -12,6 +12,7 @@ This guide is designed for technical support operatives working across Africa’
 
 ## Start here
 
+- **Download the book:** [PDF for print and offline reading](downloads/Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.pdf) · [EPUB for e-readers](downloads/Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.epub) · [Coffee Pot Snake cover](downloads/cover.png)
 - [Book map and reading paths](SUMMARY.md)
 - [Introduction and scope](1.%20Introduction/Introduction.md)
 - [Raspberry Pi field-support guide](Raspberry%20Pi%20Field%20Support/README.md)

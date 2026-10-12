@@ -3,6 +3,9 @@
 *by William Majanja — an initiative of the Hack with Raspberry Pi community*
 
 - [Book home](README.md)
+- [PDF edition](downloads/Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.pdf)
+- [EPUB edition](downloads/Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.epub)
+- [Coffee Pot Snake cover artwork](downloads/cover.png)
 - [Responsible Use](RESPONSIBLE_USE.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Contributing](CONTRIBUTING.md)

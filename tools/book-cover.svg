@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400" role="img" aria-labelledby="title description">
+  <title id="title">Raspberry Pi for Technical Support Operatives in Africa</title>
+  <desc id="description">A field-guide cover with an original ASCII Coffee Pot Snake illustration.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102a3a"/>
+      <stop offset="1" stop-color="#07151f"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#173a49"/>
+      <stop offset="1" stop-color="#102a38"/>
+    </linearGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#8ee3d0" stroke-opacity=".055" stroke-width="2"/>
+      <circle cx="0" cy="0" r="3" fill="#8ee3d0" fill-opacity=".16"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="2400" fill="url(#background)"/>
+  <rect width="1600" height="2400" fill="url(#grid)"/>
+  <path d="M0 0H1600V22H0Z" fill="#f4a261"/>
+  <path d="M120 250H1480" stroke="#8ee3d0" stroke-opacity=".55" stroke-width="3"/>
+
+  <text x="140" y="190" fill="#a8e8d8" font-family="sans-serif" font-size="29" font-weight="700" letter-spacing="5">HACK WITH RASPBERRY PI COMMUNITY</text>
+
+  <text x="140" y="440" fill="#ffffff" font-family="sans-serif" font-size="112" font-weight="700">Raspberry Pi</text>
+  <text x="140" y="565" fill="#ffffff" font-family="sans-serif" font-size="77" font-weight="700">for Technical Support</text>
+  <text x="140" y="665" fill="#8ee3d0" font-family="sans-serif" font-size="77" font-weight="700">Operatives in Africa</text>
+  <text x="145" y="755" fill="#c3d5dc" font-family="sans-serif" font-size="34">A field guide to Raspberry Pi, Linux, and responsible support</text>
+
+  <rect x="120" y="875" width="1360" height="1040" rx="28" fill="url(#panel)" stroke="#8ee3d0" stroke-opacity=".55" stroke-width="3"/>
+  <text x="800" y="970" fill="#f4a261" text-anchor="middle" font-family="sans-serif" font-size="27" font-weight="700" letter-spacing="6">THE COFFEE POT SNAKE</text>
+  <text x="800" y="1018" fill="#a8c5ce" text-anchor="middle" font-family="sans-serif" font-size="23">ORIGINAL ASCII ART</text>
+
+  <g fill="#e2f4ef" text-anchor="start" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="35">
+    <text x="445" y="1115" xml:space="preserve">             /^\/^\</text>
+    <text x="445" y="1160" xml:space="preserve">            /  o o  \</text>
+    <text x="445" y="1205" xml:space="preserve">            \   Y   /</text>
+    <text x="445" y="1250" xml:space="preserve">             `-----'</text>
+    <text x="445" y="1295" xml:space="preserve">           __/  |  \__</text>
+    <text x="445" y="1340" xml:space="preserve">       _.-'     |     `-._</text>
+    <text x="445" y="1385" xml:space="preserve">     .'    .----+----.    `.</text>
+    <text x="445" y="1430" xml:space="preserve">    /     /     |     \     \</text>
+    <text x="445" y="1475" xml:space="preserve">   |     |   COFFEE   |     |</text>
+    <text x="445" y="1520" xml:space="preserve">   |     |    POT     |    /</text>
+    <text x="445" y="1565" xml:space="preserve">    \     \_________/   .'</text>
+    <text x="445" y="1610" xml:space="preserve">     `-._   ||  ||   _.-'</text>
+    <text x="445" y="1655" xml:space="preserve">          `--||--'</text>
+    <text x="445" y="1700" xml:space="preserve">             ||</text>
+  </g>
+
+  <path d="M120 2025H1480" stroke="#8ee3d0" stroke-opacity=".55" stroke-width="3"/>
+  <text x="140" y="2135" fill="#ffffff" font-family="sans-serif" font-size="43" font-weight="700">William Majanja</text>
+  <text x="140" y="2200" fill="#bdcfd6" font-family="sans-serif" font-size="28">An initiative of the Hack with Raspberry Pi community</text>
+  <text x="1460" y="2285" fill="#8ee3d0" text-anchor="end" font-family="sans-serif" font-size="24" letter-spacing="3">FIELD GUIDE · OFFLINE-FRIENDLY · OPEN FORMATS</text>
+</svg>
