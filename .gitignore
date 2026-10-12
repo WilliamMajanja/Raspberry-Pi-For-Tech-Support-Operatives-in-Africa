@@ -1,0 +1,12 @@
+# Local Python/editor artifacts for the optional zero-dependency doc checker
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local secrets and generated test output
+.env
+.env.*
+!.env.example
+*.typescript
+typescript
