@@ -15,11 +15,11 @@ Contributions that improve accuracy, clarity, accessibility, and responsible use
 
 ## Testing a contribution
 
-This is a static Markdown guide and has no required build system. Check local links and navigation before submitting. If you add a Bash snippet, run `bash -n` on it and execute only harmless examples in a disposable directory. Do not test network or security examples outside an authorized lab.
+The source book is static Markdown; its reader-facing content has no package-install requirement. The repository also contains standard-library Python utilities and optional publication/deployment tooling. Check local links and navigation before submitting. If you add a Bash snippet, run `bash -n` on it and execute only harmless examples in a disposable directory. Do not test network or security examples outside an authorized lab.
 
-Run the repository’s optional dependency-free checker with `python3 tools/check_docs.py`. It uses Python’s standard library and Bash syntax checking; it does not install packages or execute the examples.
+Run the repository’s dependency-free checker with `python3 tools/check_docs.py`. It uses Python’s standard library and Bash syntax checking; it does not install packages or execute examples. Run FieldKit's tests with `python3 -m unittest discover -s tests`. CPIP portal integration tests must use a local mock or loopback service, never an unapproved remote target.
 
-For platform-specific commands, say exactly where they were tested. Do not describe a Debian test as a Kali test or imply that a linked third-party application was validated when it was not.
+For platform-specific commands, say exactly where they were tested. Do not generalize one board, operating system, or CPIP revision to another, or imply that a linked third-party application was validated when it was not.
 
 ## Pull requests
 

@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+build/
+dist/
+coverage.xml
+.coverage
 
 # Local secrets and generated test output
 .env
@@ -10,3 +14,13 @@ venv/
 !.env.example
 *.typescript
 typescript
+
+# Generated editions and personalized issuance data (publish from the CPIP portal only)
+downloads/*.pdf
+downloads/*.epub
+downloads/cover.png
+portal-data/
+*.ledger.jsonl
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal

@@ -1,0 +1,26 @@
+[Unit]
+Description=CPIP Book Portal gateway
+After=network.target cpip.service
+Requires=cpip.service
+
+[Service]
+Type=simple
+User=fieldbook
+Group=fieldbook
+WorkingDirectory=/opt/raspberry-pi-fieldbook
+EnvironmentFile=/etc/cpip-book-portal/portal.env
+ExecStart=/usr/bin/python3 -m portal.book_portal
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/cpip-book-portal
+
+[Install]
+WantedBy=multi-user.target

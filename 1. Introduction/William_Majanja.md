@@ -30,10 +30,6 @@ William’s public [GitHub profile](https://github.com/WilliamMajanja) states th
 
 At the time of review, `poti.org` resolved to an unrelated domain portfolio. The Institute’s official public website is `peaceopstraining.org`.
 
-## Historical security artifact: Jester-themed ransomware fork
-
-The older profile contains [`fsociety-ransomware-MrRobot`](https://github.com/WilliamMajanja-zz/fsociety-ransomware-MrRobot), a C++ fork of [`graniet/fsociety-ransomware-MrRobot`](https://github.com/graniet/fsociety-ransomware-MrRobot). Its README describes a Jester-themed ransomware proof of concept, warns that files may be unrecoverable, and calls the project incomplete. It is included only as a provenance-aware historical security artifact—not as a recommended tool or a project to run. No build or execution instructions are provided. GitHub reports no repository license, so do not assume the code is available for reuse.
-
 ## Profiles and attribution
 
 - [WilliamMajanja — current profile and selected projects](https://github.com/WilliamMajanja)

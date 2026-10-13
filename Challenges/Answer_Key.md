@@ -32,6 +32,20 @@ Remove or restrict the public exposure through the authorized support process, p
 </details>
 
 <details>
+<summary>Coffee Pot Snake Cryptex</summary>
+
+1. **Backup** — preserve a separate recovery copy before re-imaging.
+2. **Authorized** — send sensitive reports only through an approved channel with appropriate access.
+3. **Capture** — record the current state before an approved change.
+4. **Keep** — preserve original storage if it may contain unique data.
+5. **Unnecessary** — remove identifiers that the public report does not need.
+6. **Published** — compare the digest with the manifest issued for those files.
+
+The first letters spell **BACKUP**. It is only the physical puzzle setting; the portal starter answer is separately `FLAG{WRITTEN_SCOPE}`.
+
+</details>
+
+<details>
 <summary>Quiz Levels</summary>
 
 - **QUIZ-0:** B. A support operative does not inspect or identify an explosive hazard; follow local safety procedures and report it to qualified personnel.
@@ -40,6 +54,7 @@ Remove or restrict the public exposure through the authorized support process, p
 - **QUIZ-3:** B. Meaningful participation and safety/accessibility barriers matter; avoid unnecessary sensitive data collection.
 - **QUIZ-4:** B. Genetic engineering is a method, not one uniform exposure; assess a specific product and evidence case by case, and separate hazard from risk at a particular exposure.
 - **QUIZ-5:** B. Profit can create incentives, but proving a specific harm or intent requires case-specific evidence. Purdue is a documented example with its own legal record, not a basis for claims about every pharmaceutical company.
+- **PORTAL-0:** `FLAG{WRITTEN_SCOPE}`. A written scope defines authorized systems, methods, time window, contacts, and stop conditions. The starter puzzle is public and is not proof of a person's identity.
 
 </details>
 

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297" role="img" aria-labelledby="title desc">
+  <title id="title">Coffee Pot Snake paper cryptex template</title>
+  <desc id="desc">A4, 100-percent-scale alphabet bands and a six-window sleeve for a classroom paper-wheel puzzle.</desc>
+  <style>
+    text { font-family: sans-serif; fill: #111; }
+    .heading { font-size: 5px; font-weight: 700; }
+    .label { font-size: 3.2px; }
+    .small { font-size: 2.6px; }
+    .letter { font-size: 3.7px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+    .cut { fill: none; stroke: #111; stroke-width: 0.35; }
+    .fold { fill: none; stroke: #26734d; stroke-width: 0.3; stroke-dasharray: 2 1; }
+    .window { fill: #fff; stroke: #b33; stroke-width: 0.45; }
+  </style>
+  <text class="heading" x="15" y="13">COFFEE POT SNAKE — PAPER WORD-WHEEL PROP</text>
+  <text class="small" x="15" y="19">Print A4 at 100% / actual size. Do not use “fit to page”. Red = cut; green dashed = fold.</text>
+  <text class="label" x="15" y="25">Six alphabet bands (each wraps a 49.7 mm tube; glue tab is on the right).</text>
+
+  <g id="alphabet-bands">
+    <g transform="translate(15 31)">
+      <text class="small" x="0" y="-2">BAND 1</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+    <g transform="translate(15 50)">
+      <text class="small" x="0" y="-2">BAND 2</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+    <g transform="translate(15 69)">
+      <text class="small" x="0" y="-2">BAND 3</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+    <g transform="translate(15 88)">
+      <text class="small" x="0" y="-2">BAND 4</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+    <g transform="translate(15 107)">
+      <text class="small" x="0" y="-2">BAND 5</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+    <g transform="translate(15 126)">
+      <text class="small" x="0" y="-2">BAND 6</text><rect class="cut" x="0" y="0" width="156" height="16"/><rect class="fold" x="156" y="0" width="11" height="16"/>
+      <g class="letter"><text x="3" y="8">A</text><text x="9" y="8">B</text><text x="15" y="8">C</text><text x="21" y="8">D</text><text x="27" y="8">E</text><text x="33" y="8">F</text><text x="39" y="8">G</text><text x="45" y="8">H</text><text x="51" y="8">I</text><text x="57" y="8">J</text><text x="63" y="8">K</text><text x="69" y="8">L</text><text x="75" y="8">M</text><text x="81" y="8">N</text><text x="87" y="8">O</text><text x="93" y="8">P</text><text x="99" y="8">Q</text><text x="105" y="8">R</text><text x="111" y="8">S</text><text x="117" y="8">T</text><text x="123" y="8">U</text><text x="129" y="8">V</text><text x="135" y="8">W</text><text x="141" y="8">X</text><text x="147" y="8">Y</text><text x="153" y="8">Z</text></g>
+    </g>
+  </g>
+
+  <text class="label" x="15" y="151">Outer sleeve: cut the six red windows; fold/glue the right tab. Window centers align with band centers.</text>
+  <g transform="translate(15 158)">
+    <rect class="cut" x="0" y="0" width="156" height="124"/>
+    <rect class="fold" x="156" y="0" width="11" height="124"/>
+    <g>
+      <rect class="window" x="75.5" y="2" width="5" height="12"/>
+      <rect class="window" x="75.5" y="21" width="5" height="12"/>
+      <rect class="window" x="75.5" y="40" width="5" height="12"/>
+      <rect class="window" x="75.5" y="59" width="5" height="12"/>
+      <rect class="window" x="75.5" y="78" width="5" height="12"/>
+      <rect class="window" x="75.5" y="97" width="5" height="12"/>
+    </g>
+    <text class="small" x="1" y="122">GLUE TAB →</text>
+  </g>
+  <text class="small" x="15" y="290">Paper prop is a combination display only. It does not lock or protect contents.</text>
+</svg>

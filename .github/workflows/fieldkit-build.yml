@@ -1,0 +1,44 @@
+name: FieldKit validation and standalone builds
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            target: linux-x86_64
+          - runner: ubuntu-24.04-arm
+            target: linux-arm64
+          - runner: windows-2022
+            target: windows-x86_64
+          - runner: macos-13
+            target: macos-x86_64
+          - runner: macos-14
+            target: macos-arm64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned build-only tools
+        run: python -m pip install -r tools/requirements-build.txt
+      - name: Run standard-library tests
+        run: python -m unittest discover -s tests -v
+      - name: Check book links and shell syntax
+        run: python tools/check_docs.py
+      - name: Build and smoke-test standalone FieldKit
+        run: python tools/package_fieldkit.py --target ${{ matrix.target }} --output-dir build/standalone
+
+# No binary is uploaded by this workflow. Official app bundles and editions are
+# installed into and served from the CPIP Book Portal only.

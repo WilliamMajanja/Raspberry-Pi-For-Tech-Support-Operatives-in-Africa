@@ -18,23 +18,6 @@ from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parent.parent
-LEGACY_DIRS = {
-    "2. Exploitation Tools",
-    "3. Forensics Tools",
-    "4. Hardware Hacking",
-    "5. Information Gathering",
-    "6. Maintaining Access",
-    "7. Password Attacks",
-    "8. Reporting Tools",
-    "9. Reverse Engineering",
-    "10. Sniffing & Spoofing",
-    "11. Stress Testing",
-    "12. Web Applications",
-    "13. Wireless Attacks",
-    "14. Useful Github Repositories",
-    "15. Conclusion",
-    "Miscellaneous",
-}
 LINK_START = re.compile(r"!?\[[^\]]*\]\(")
 
 
@@ -84,14 +67,8 @@ def markdown_destinations(text: str):
             yield destination
 
 
-def maintained_markdown(include_legacy: bool) -> list[Path]:
-    documents = []
-    for path in sorted(ROOT.rglob("*.md")):
-        relative = path.relative_to(ROOT)
-        if not include_legacy and relative.parts and relative.parts[0] in LEGACY_DIRS:
-            continue
-        documents.append(path)
-    return documents
+def maintained_markdown() -> list[Path]:
+    return sorted(ROOT.rglob("*.md"))
 
 
 def local_target(source: Path, destination: str) -> Path | None:
@@ -171,18 +148,13 @@ def check_shell(documents: list[Path]) -> tuple[list[str], int]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--include-legacy",
-        action="store_true",
-        help="also check the unreviewed historical catalog",
-    )
-    parser.add_argument(
         "--no-shell-check",
         action="store_true",
         help="skip Bash syntax validation",
     )
     args = parser.parse_args()
 
-    documents = maintained_markdown(args.include_legacy)
+    documents = maintained_markdown()
     errors = []
     empty = [path for path in documents if not path.read_text(encoding="utf-8").strip()]
     errors.extend(f"{path.relative_to(ROOT)}: maintained Markdown page is empty" for path in empty)

@@ -111,6 +111,14 @@ A. Yes; a financial incentive alone proves intent and causation.
 B. No; examine the specific evidence, product, exposure, regulatory record, and any admissions or findings before claiming intent or causation.
 C. Corporate conduct can never be investigated from public records.
 
+### PORTAL-0 — Bootstrap puzzle for a Coffee Cipher
+
+Before a support team performs an authorized security assessment, it records the approved assets, methods, time window, contacts, and stop conditions in a written **_____**.
+
+**Task:** Fill in the missing phrase and submit its exact `FLAG{...}` token to the CPIP Book Portal starter form.
+
+**Important:** This is a public puzzle gate, not identity verification. Its answer is shareable and is listed in the answer key. The portal issues a separate random per-edition Coffee Cipher after the starter step.
+
 ## Crypto Flag Levels
 
 ### CRYPTO-0 — ROT13 is encoding

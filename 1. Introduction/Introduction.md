@@ -18,7 +18,7 @@ The title’s regional focus is an invitation to adapt the material to African d
 
 The field-support chapters cover board-aware imaging and first boot, network and desktop triage, Linux kernel and Bash foundations, practical command-line recipes, change control, backup and restore planning, privacy, and handover. The guide also introduces safe technical support for peace operations and humanitarian data systems involving mine action, child protection, and Women, Peace and Security (WPS). Its public-interest Informatics chapter examines the Muainishi application series, health-data governance, evidence about corporate conduct, and how to assess agricultural and carcinogenicity claims. This is contextual guidance, not clinical, legal, EOD, peacekeeper, or regulatory advice.
 
-The prior edition explicitly left Linux kernel and shell-programming topics out of scope; this edition covers them in full learning chapters. Older Kali-tool directories remain a historical archive and are not a current package catalogue.
+The earlier edition left Linux kernel and shell-programming topics out of scope; this edition now teaches them directly. Security assessment is covered only as an authorized, carefully scoped support practice, with remediation and recovery as the goal.
 
 ## Operating-system choices
 

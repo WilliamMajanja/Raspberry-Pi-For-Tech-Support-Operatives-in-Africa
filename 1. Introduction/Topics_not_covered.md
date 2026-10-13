@@ -1,11 +1,22 @@
-# Linux Topics Now Covered
+# Scope, Foundations, and Limits
 
-The earlier edition explicitly left complex Linux fundamentals outside its scope. This guide now introduces the **Linux kernel**, **Bash and shell programming**, and the system concepts needed to understand the tools that run on Linux.
+This book teaches foundations that support work often assumes: the Linux kernel and shell, files and permissions, basic networking, services and logs, and the verification and recovery steps that make technical work trustworthy. Start with the [Linux Foundations](../0.%20Linux%20Foundations/README.md), then apply them in the [Raspberry Pi support playbooks](../Raspberry%20Pi%20Field%20Support/Support_Playbooks.md).
 
-- [Linux kernel and system model](../0.%20Linux%20Foundations/Linux_Kernel.md)
-- [Bash shell programming](../0.%20Linux%20Foundations/Shell_Programming.md)
-- [Practical command-line recipes](../0.%20Linux%20Foundations/Command_Line_Recipes.md)
+## What is in scope
 
-These chapters focus on safe inspection and foundational learning. Advanced kernel changes belong in a disposable lab and must follow documentation for the target distribution and hardware.
+- board-aware setup, OS selection, first boot, and local troubleshooting;
+- command-line and basic Linux administration with safe verification and rollback;
+- offline-first support, backups, maintenance, incident intake, and handover;
+- authorized security assessment integrated with support operations;
+- privacy-aware information support, field role boundaries, and data stewardship;
+- original dependency-light utilities, worksheets, and the Coffee Pot Snake learning puzzle.
 
-The old text also asserted that linked tools and downloads were “completely verified” and “virus-free.” That assurance was not supportable and is withdrawn. A link is not a safety review; verify software provenance, signatures, hashes, maintenance status, and license before use.
+## What is not operational training
+
+This book is not training in explosive-ordnance identification or disposal, mine clearance, child-protection casework, peacekeeping, clinical practice, or legal decision-making. It does not authorize tests on third-party networks or provide instructions for covert access, persistence, credential capture, or data theft. Consult qualified specialists and the responsible organization’s current procedures.
+
+## Platform and evidence limits
+
+The authoring system and each recipe’s stated test status are not evidence that every Raspberry Pi model, OS release, peripheral, CPIP revision, or field deployment has been tested. Labels distinguish `tested locally`, `source reviewed`, `platform-specific`, `optional dependency`, and `not tested`. A documentation link is not a safety review or an endorsement.
+
+When a procedure depends on a missing prerequisite, unverified upstream behavior, local policy, or a specialist decision, the book names that gap and gives a safe escalation path rather than silently assuming it away.

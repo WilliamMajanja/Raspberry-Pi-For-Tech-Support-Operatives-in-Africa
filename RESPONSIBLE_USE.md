@@ -32,7 +32,6 @@ Kali and Debian are related but not interchangeable. Use the package repositorie
 ## Project-specific cautions
 
 - The CPIP- chapter describes an independent research project. Keep initial tests loopback-only and treat the project’s security claims as unverified unless independently reviewed.
-- The Jester-themed ransomware fork in the author portfolio is included only as a historical security artifact. Do not build or run it on a personal or production system.
 - Health, election, land, and agricultural Informatics projects linked from the portfolio are described according to their repositories; this book does not claim clinical, electoral, legal, or operational validation.
 - Mine-action, child-protection, and WPS content is an orientation for technical support roles. It is not EOD, mine-clearance, peacekeeper, child-protection, or gender-adviser training. Follow the current mandate, national standards, qualified specialists, and organizational safeguarding rules.
 - Never approach, touch, identify, move, mark, or attempt to disable a suspected explosive item. Use locally approved emergency reporting procedures and trained authorities.
