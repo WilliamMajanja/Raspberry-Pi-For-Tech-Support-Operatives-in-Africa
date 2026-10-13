@@ -110,6 +110,50 @@ PROFILE_CHALLENGES = {
 INLINE_LINK = re.compile(r"\[[^\]\n]*\]\(")
 ATX_HEADING = re.compile(r"^( {0,3})(#{1,6})[ \t]+(.+?)\s*$")
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+SOURCE_EXPLANATIONS = {
+    ".github/workflows/fieldkit-build.yml": "Runs documentation checks, the standard-library test suite, and standalone packaging across the listed OS/CPU runners. It uploads no binaries; platform matrix success is required before advertising a target.",
+    ".gitignore": "Keeps local build output, generated editions, local databases, and secret-bearing runtime files out of ordinary Git changes. It is a convenience filter, not a secret scanner.",
+    "Challenges/Coffee_Pot_Snake_Cryptex.scad": "Parametric model for the six-wheel educational cryptex prop. The internal wheel notches align at the `BACKUP` puzzle setting; it is a low-force classroom prop and has not been printed or fit-tested.",
+    "Challenges/Coffee_Pot_Snake_Paper_Cryptex.svg": "Native A4 vector template for six alphabet bands and a paper sleeve. Print at 100% / actual size; this cardboard version displays a code but is not a lock.",
+    "LICENSE": "Repository-level licensing scope notice. It points to the precise CC0 scope and does not relicense CPIP or other third-party material.",
+    "LICENSES/CC0-1.0.txt": "Canonical CC0 1.0 legal text for original work identified in `LICENSES/CC0-SCOPE.md`.",
+    "fieldkit/__init__.py": "Defines the FieldKit package and its current version. It performs no inventory or network activity during import.",
+    "fieldkit/__main__.py": "Small module entry point so `python -m fieldkit` and the packaged launcher reach the same command-line dispatcher.",
+    "fieldkit/cli.py": "Connects user commands to local inventory, report scrubbing, hashes, the local audit ledger, cover generation, the CPIP portal client, and edition-signature verification. It does not initiate assessment scans.",
+    "fieldkit/coffee_snake.py": "Creates original ASCII/SVG Coffee Pot Snake art and a local art-variant record from random or explicitly supplied seed bytes. The variant ID is not a reader identity or credential.",
+    "fieldkit/core.py": "Implements dependency-free local inventory, best-effort redaction, owner-only no-overwrite output, safe SHA-256 manifests, and a locked local hash-chain log. The log is not a decentralized blockchain; hashes need a trusted reference to establish authenticity.",
+    "fieldkit/portal_client.py": "Submits the public starter answer, sends the Coffee Cipher only over same-origin HTTPS, downloads signed edition artifacts, checks the independent publisher fingerprint, verifies file hashes, and stores the next cipher privately. It does not upload local reports.",
+    "fieldkit/signatures.py": "Canonicalizes the edition manifest, signs/verifies it with Ed25519, checks a separately trusted public-key fingerprint, and validates the PDF/EPUB/cover/printables digests. It uses the optional `cryptography` dependency; it never treats the Coffee Cipher as a signature.",
+    "fieldkit_launcher.py": "PyInstaller entry point for the standalone executable. It delegates to the same CLI used by source execution.",
+    "illustrations/field-support-loop.svg": "Original six-step troubleshooting diagram: authorize, observe, record, agree a hypothesis, change reversibly, and verify or hand over.",
+    "illustrations/informatics-review.svg": "Original review path for intended use, data provenance, processing, validation, human accountability, and recourse.",
+    "illustrations/network-troubleshooting.svg": "Original layered network diagnostic diagram from link through a named service. It encourages local, approved checks rather than neighbor scanning.",
+    "illustrations/offline-data-workflow.svg": "Original field-data lifecycle diagram with authority, minimization, provenance, offline protection, synchronization review, and retention controls.",
+    "portal/admin.py": "Operator-only commands to revoke an edition’s portal credential or publish a platform app after checking its target, SHA-256 manifest, ZIP paths, executable, and notices. Revocation cannot retrieve files already shared.",
+    "portal/book-portal.service.example": "Example systemd unit for running the gateway as an unprivileged service with a loopback listener and restricted writable data directory. Review account/path names before deployment.",
+    "portal/book_portal.py": "The portal gateway: validates the starter puzzle and edition ciphers, builds profile-ordered books, signs manifests, stores artifact hashes in a local SQLite audit chain, and serves only authenticated edition artifacts. Caddy/TLS and the loopback-only CPIP service are separate deployment requirements.",
+    "portal/caddy.Caddyfile.example": "Example public HTTPS reverse-proxy configuration that forwards only to the loopback portal gateway. It does not expose CPIP routes or replace host-level security review.",
+    "portal/cpip.env.sample": "Placeholder CPIP service settings that bind the encoder backend to loopback and disable unrelated radio, mesh, discovery, and transport features. Replace the key locally; never commit a real value.",
+    "portal/cpip.service.example": "Example systemd unit for the separate CPIP encoding service. It uses a distinct unprivileged account and loopback-only network configuration.",
+    "portal/cpip_adapter.py": "Restricts portal-to-CPIP requests to two local CoffeeCipher encode/decode endpoints and authenticates those requests with the CPIP HMAC key. The HMAC key is not the publisher signing key.",
+    "portal/portal.env.sample": "Placeholder environment configuration for the portal’s CPIP key, independent token pepper, domain, data paths, signing-key file, and source commit SHA. It must be copied and securely configured outside the repository.",
+    "portal/requirements.txt": "Pinned portal-side Ed25519 library dependency. Readers who use the standalone FieldKit verifier receive this runtime inside the platform bundle.",
+    "tests/test_book_build.py": "Checks every profile’s reading sequence retains every chapter, local image links are rebased for both renderers, and the full-scale printable pack contains the expected A4 template.",
+    "tests/test_book_portal.py": "Exercises bootstrap, edition issuance, per-edition authorization, revocation, HTTP route gating, artifact digests, and Ed25519 manifest verification using synthetic artifacts and a temporary key.",
+    "tests/test_coffee_snake.py": "Checks deterministic seeded artwork, variant changes, SVG well-formedness, and seed validation without contacting a service.",
+    "tests/test_cpip_adapter.py": "Checks CPIP cipher parsing/validation and loopback-only endpoint rules with a local fake HTTP service.",
+    "tests/test_cpip_integration.py": "Optional live smoke test for an explicitly supplied pinned CPIP checkout. It disables unrelated transports, binds to loopback, and uses synthetic tokens, artifacts, and a temporary signing key.",
+    "tests/test_fieldkit.py": "Checks local inventory omissions, report redaction, safe output creation, manifest traversal rejection, file-change detection, and tamper-evident ledger behavior with temporary fixtures.",
+    "tests/test_portal_admin.py": "Checks operator publication rejects an app ZIP or digest that does not match its manifest, using a synthetic bundle.",
+    "tests/test_portal_client.py": "Runs a local portal fixture to test HTTPS-origin rules, cipher use, edition/printables downloads, signature pinning, changed-file detection, and standalone-bundle hashes.",
+    "tools/book-cover.svg": "Static front-cover source for the general preview. Personalized editions use the seeded cover renderer instead.",
+    "tools/book.css": "Shared EPUB/PDF typography and pagination: A5 trim, mirrored print margins, page numbers, readable diagrams, wrapping code, and tables allowed to flow across pages.",
+    "tools/build_books.py": "Build pipeline that derives chapter order from `SUMMARY.md`, checks page coverage, assigns stable cross-page links, embeds local SVG assets and source explanations, and writes A5 PDF, EPUB, cover PNG, and exact-size printable ZIP outputs.",
+    "tools/check_docs.py": "Dependency-free documentation check for non-empty Markdown, local links, and Bash syntax. It parses snippets but does not execute them or validate factual claims.",
+    "tools/coffee_snake.py": "Compatibility wrapper that exposes the packaged FieldKit cover generator under the older tools path.",
+    "tools/package_fieldkit.py": "Builds a one-file executable on the matching OS/CPU host, smoke-tests it, collects runtime licenses including `cryptography`, and writes a bundle SHA-256 manifest. It refuses cross-compilation.",
+    "tools/requirements-build.txt": "Pinned, maintainer-only PyInstaller, hook, and cryptography versions for reproducible native packaging. These packages are not reader-side installation requirements.",
+}
 
 
 def slugify(value: str) -> str:
@@ -206,12 +250,35 @@ def source_files() -> list[Path]:
 def make_source_appendix(temp_dir: Path) -> Path:
     """Embed source/configuration text, but not generated binary book artifacts."""
     lines = [
-        "# Appendix: Complete Source Listings",
+        "# Appendix: Explained Source Listings",
         "",
-        "This appendix is generated from the exact source tree used for this edition. It excludes the PDF/EPUB outputs themselves and includes only text assets and sample configuration. Sample files contain placeholders, never production keys.",
+        "This appendix contains the exact authored text source, examples, tests, and sample configuration from the edition build. It excludes the PDF/EPUB binaries themselves. Every listing is preceded by a plain-language explanation of its role, data flow, and relevant trust boundary; sample environment files contain placeholders, never production keys.",
+        "",
+        "## How to read these files",
+        "",
+        "Start with the explanatory paragraph before a listing. The code is a reference implementation, not a sequence to paste blindly into a live system. Check the matching component README, the stated platform prerequisites, and the tests before changing it. `tools/check_docs.py` parses Bash examples but never runs them; the unit tests use temporary directories and synthetic fixtures.",
+        "",
+        "## Component flow",
+        "",
+        "1. `SUMMARY.md` defines the human reading order. `tools/build_books.py` verifies coverage, rewrites cross-chapter links, embeds local diagrams, formats the A5 PDF and EPUB, and packages exact-size print assets.",
+        "2. `fieldkit.cli` dispatches local commands to `fieldkit.core`: inventory, report scrubbing, SHA-256 manifests, and a local issuance hash chain. These local commands do not probe networks or change system services.",
+        "3. `fieldkit.portal_client` sends the Coffee Cipher only to the configured same-origin HTTPS portal. `portal.book_portal` authenticates the bearer code with the local CPIP adapter and serves the edition artifacts; it does not proxy the wider CPIP API.",
+        "4. CPIP- encodes/decodes the Coffee Cipher. The portal separately builds the personalized book, creates a canonical manifest with source revision and artifact digests, and signs it with an Ed25519 publisher key. The CPIP covert key and publisher signing key have different roles and must never be reused.",
+        "5. `fieldkit.signatures` verifies that detached signature against a fingerprint obtained independently from the event/release publisher, then hashes the PDF, EPUB, cover, and printables pack. A valid signature authenticates those bytes against the trusted publisher key; it does not establish factual correctness, a participant’s identity, or DRM.",
+        "6. `tests/` documents expected behavior. The optional live CPIP test requires an explicitly configured checkout and keeps the test service on loopback. `.github/workflows/fieldkit-build.yml` repeats the regular checks and builds native OS/CPU bundles without publishing binaries.",
+        "",
+        "## File-by-file source explanations",
         "",
     ]
-    for path in source_files():
+    source_paths = source_files()
+    undescribed = [
+        path.relative_to(ROOT).as_posix()
+        for path in source_paths
+        if path.relative_to(ROOT).as_posix() not in SOURCE_EXPLANATIONS
+    ]
+    if undescribed:
+        raise ValueError("Source appendix has no explanation for: " + ", ".join(undescribed))
+    for path in source_paths:
         relative = path.relative_to(ROOT).as_posix()
         suffix = path.suffix.lower()
         language = {
@@ -227,7 +294,18 @@ def make_source_appendix(temp_dir: Path) -> Path:
         content = path.read_text(encoding="utf-8")
         longest_backticks = max((len(match.group(0)) for match in re.finditer(r"`+", content)), default=0)
         fence = "`" * max(4, longest_backticks + 1)
-        lines.extend([f"## `{relative}`", "", f"{fence}{language}", content.rstrip("\n"), fence, ""])
+        lines.extend([
+            f"## `{relative}`",
+            "",
+            SOURCE_EXPLANATIONS[relative],
+            "",
+            "**Source listing:**",
+            "",
+            f"{fence}{language}",
+            content.rstrip("\n"),
+            fence,
+            "",
+        ])
     appendix = temp_dir / "source-appendix.md"
     appendix.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return appendix
