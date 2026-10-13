@@ -16,4 +16,6 @@ Local previews are not CPIP-issued editions: they have no CPIP Coffee Cipher or 
 
 ## Edition verification
 
-An official edition includes its edition ID, profile, build/source revision, PDF/EPUB SHA-256 digests, and the associated hash-chain ledger record. Verify the release manifest before archiving a downloaded copy. The local hash-chain ledger is an audit aid, not a decentralized blockchain or a guarantee that a copy cannot be changed or shared.
+An official edition package includes its edition ID, reader profile, source revision, PDF/EPUB/cover/printables SHA-256 digests, canonical JSON manifest, detached Ed25519 signature, and publisher public key. The printables ZIP contains the exact-size A4 cryptex SVG and field worksheets. Obtain the signing fingerprint from an independent event or release channel, then verify the files with `fieldkit verify-edition EDITION_DIRECTORY --trusted-fingerprint FINGERPRINT` before archiving the copy. The Coffee Cipher is a separate CPIP bearer credential for future portal use; it is not the signature. The local hash-chain issuance ledger is an audit aid, not a decentralized blockchain or a guarantee that a copy cannot be changed or shared.
+
+Local preview builds are unsigned and must not be presented as publisher-signed CPIP editions. The portal release key is not generated in this repository; the service operator provisions it outside Git and publishes its public-key fingerprint separately. Until the host, HTTPS, release key, and origin are configured and reviewed, no official signed download package is live.

@@ -22,6 +22,7 @@ from .core import (
     write_new_private_file,
 )
 from .portal_client import PortalClientError, bootstrap, create_edition, download_standalone
+from .signatures import EditionSignatureError, verify_edition_directory
 
 
 def _manifest_command(args: argparse.Namespace) -> int:
@@ -67,6 +68,11 @@ def _parser() -> argparse.ArgumentParser:
     verify.add_argument("root", type=Path)
     verify.add_argument("manifest", type=Path)
 
+    signed_edition = sub.add_parser("verify-edition", help="verify a publisher signature and signed PDF/EPUB digests")
+    signed_edition.add_argument("directory", type=Path, help="downloaded edition directory")
+    signed_edition.add_argument("--trusted-fingerprint", required=True, help="SHA-256 key fingerprint obtained independently from the publisher/event")
+    signed_edition.add_argument("--public-key", type=Path, help="publisher PEM key; defaults to publisher-edition-key.pem in the edition directory")
+
     ledger = sub.add_parser("ledger", help="verify or append to a local tamper-evident edition ledger")
     ledger_sub = ledger.add_subparsers(dest="ledger_action", required=True)
     ledger_verify = ledger_sub.add_parser("verify", help="verify a local hash chain")
@@ -89,6 +95,7 @@ def _parser() -> argparse.ArgumentParser:
     edition.add_argument("--profile", required=True, help="edition profile from the CPIP portal")
     edition.add_argument("--cipher-file", type=Path, help="private file from `fieldkit portal bootstrap`; otherwise prompt")
     edition.add_argument("--origin", help="HTTPS CPIP Book Portal origin; defaults to CPIP_BOOK_PORTAL_ORIGIN")
+    edition.add_argument("--signing-key-fingerprint", required=True, help="publisher fingerprint from an independent event/release source")
     edition.add_argument("--output-dir", type=Path, default=Path("."))
     app = portal_sub.add_parser("app", help="download a standalone FieldKit binary from the CPIP portal")
     app.add_argument("--target", required=True, choices=("linux-arm64", "linux-x86_64", "windows-x86_64", "macos-arm64", "macos-x86_64"))
@@ -118,6 +125,16 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "manifest":
             return _manifest_command(args)
+        if args.command == "verify-edition":
+            manifest = verify_edition_directory(
+                args.directory,
+                args.trusted_fingerprint,
+                public_key_path=args.public_key,
+            )
+            print(f"Ed25519 signature valid: edition {manifest['edition_id']} ({manifest['profile']})")
+            for kind, item in manifest["artifacts"].items():
+                print(f"{kind.upper()}: {item['file']} SHA-256 {item['sha256']} verified")
+            return 0
         if args.command == "ledger":
             if args.ledger_action == "verify":
                 problems = verify_issuance_ledger(args.path)
@@ -156,13 +173,19 @@ def main(argv: list[str] | None = None) -> int:
                 path = download_standalone(args.target, cipher, args.output_dir, origin=args.origin)
                 print(f"FieldKit standalone bundle: {path}")
                 return 0
-            result = create_edition(cipher, args.profile, args.output_dir, origin=args.origin)
+            result = create_edition(
+                cipher,
+                args.profile,
+                args.output_dir,
+                origin=args.origin,
+                trusted_fingerprint=args.signing_key_fingerprint,
+            )
             print(f"Edition: {result['edition_id']}")
             for kind, item in result["files"].items():
                 print(f"{kind.upper()}: {item['path']} (SHA-256 {item['sha256']})")
             print(f"Next edition cipher: {args.output_dir / result['edition_id'] / 'coffee-cipher.txt'}")
             return 0
-    except (FieldKitError, PortalClientError, OSError, ValueError) as error:
+    except (FieldKitError, EditionSignatureError, PortalClientError, OSError, ValueError) as error:
         print(f"fieldkit: {error}", file=sys.stderr)
         return 2
     parser.error("unknown command")

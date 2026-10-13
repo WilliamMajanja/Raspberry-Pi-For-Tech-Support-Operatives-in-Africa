@@ -30,6 +30,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from fieldkit.signatures import (
+    MANIFEST_NAME,
+    PUBLIC_KEY_NAME,
+    SIGNATURE_NAME,
+    EditionSignatureError,
+    load_private_key,
+    sign_manifest,
+)
 from portal.cpip_adapter import CPIPAdapter, CPIPAdapterError
 
 
@@ -136,6 +144,15 @@ class PortalStore:
                     cover_name TEXT NOT NULL,
                     cover_sha256 TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS edition_artifacts (
+                    edition_id TEXT NOT NULL,
+                    kind TEXT NOT NULL,
+                    relative_name TEXT NOT NULL,
+                    sha256 TEXT NOT NULL,
+                    content_type TEXT NOT NULL,
+                    PRIMARY KEY(edition_id, kind),
+                    FOREIGN KEY(edition_id) REFERENCES editions(edition_id) ON DELETE CASCADE
+                );
                 CREATE TABLE IF NOT EXISTS blocks (
                     block_index INTEGER PRIMARY KEY,
                     previous_hash TEXT NOT NULL,
@@ -143,6 +160,18 @@ class PortalStore:
                     block_hash TEXT NOT NULL UNIQUE
                 );
             """)
+            # Upgrade editions created by early portal prototypes before the
+            # generic, detached-signature artifact table existed.
+            for row in db.execute("SELECT edition_id, pdf_name, pdf_sha256, epub_name, epub_sha256, cover_name, cover_sha256 FROM editions").fetchall():
+                for kind, filename, digest, content_type in (
+                    ("pdf", row["pdf_name"], row["pdf_sha256"], "application/pdf"),
+                    ("epub", row["epub_name"], row["epub_sha256"], "application/epub+zip"),
+                    ("cover", row["cover_name"], row["cover_sha256"], "image/png"),
+                ):
+                    db.execute(
+                        "INSERT OR IGNORE INTO edition_artifacts VALUES (?, ?, ?, ?, ?)",
+                        (row["edition_id"], kind, filename, digest, content_type),
+                    )
         try:
             os.chmod(self.db_path, 0o600)
         except OSError:
@@ -221,10 +250,13 @@ class PortalStore:
         cover_name: str,
         cover_hash: str,
         cipher_hash: str,
+        artifacts: dict[str, tuple[str, str, str]],
     ) -> None:
         token_digest = self.token_digest(edition_id, token)
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        combined_hash = hashlib.sha256((pdf_hash + epub_hash + cover_hash).encode("ascii")).hexdigest()
+        combined_hash = hashlib.sha256(
+            "".join(f"{kind}:{artifacts[kind][1]}\n" for kind in sorted(artifacts)).encode("ascii")
+        ).hexdigest()
         payload = {
             "type": "personalized-edition-issued",
             "edition_id": edition_id,
@@ -243,8 +275,20 @@ class PortalStore:
                 "INSERT INTO credentials(token_digest, edition_id, profile, created_utc) VALUES (?, ?, ?, ?)",
                 (token_digest, edition_id, profile, now),
             )
+            for kind, (relative_name, digest, content_type) in artifacts.items():
+                db.execute(
+                    "INSERT INTO edition_artifacts VALUES (?, ?, ?, ?, ?)",
+                    (edition_id, kind, relative_name, digest, content_type),
+                )
             self._append_block(db, payload)
             db.commit()
+
+    def get_edition_artifact(self, edition_id: str, kind: str) -> sqlite3.Row | None:
+        with self._connect() as db:
+            return db.execute(
+                "SELECT relative_name, sha256, content_type FROM edition_artifacts WHERE edition_id=? AND kind=?",
+                (edition_id, kind),
+            ).fetchone()
 
     def get_edition(self, edition_id: str) -> sqlite3.Row | None:
         if not EDITION_ID_RE.fullmatch(edition_id):
@@ -294,6 +338,8 @@ class BookPortal:
         starter_answer_hash: str,
         app_dir: Path | None = None,
         allowed_host: str | None = None,
+        signing_private_key_path: Path | None = None,
+        source_revision: str | None = None,
     ):
         if not re.fullmatch(r"[a-f0-9]{64}", starter_answer_hash):
             raise PortalError("Starter answer hash must be a 64-character SHA-256 digest.")
@@ -303,6 +349,27 @@ class BookPortal:
         self.data_dir = self.store.data_dir
         self.app_dir = app_dir.expanduser().resolve() if app_dir else self.data_dir / "apps"
         self.allowed_host = allowed_host.lower().rstrip(".") if allowed_host else None
+        key_path = signing_private_key_path or (Path(os.environ["CPIP_BOOK_SIGNING_PRIVATE_KEY"]) if os.environ.get("CPIP_BOOK_SIGNING_PRIVATE_KEY") else None)
+        self.signing_key = None
+        self.signing_public_key = b""
+        self.signing_key_fingerprint = ""
+        if key_path:
+            try:
+                self.signing_key = load_private_key(key_path)
+                from cryptography.hazmat.primitives import serialization
+
+                self.signing_public_key = self.signing_key.public_key().public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+                )
+                from fieldkit.signatures import key_fingerprint
+
+                self.signing_key_fingerprint = key_fingerprint(self.signing_key.public_key())
+            except (EditionSignatureError, OSError, ImportError) as error:
+                raise PortalError(f"Edition-signing key configuration failed: {error}") from error
+        self.source_revision = source_revision or os.environ.get("CPIP_BOOK_SOURCE_REVISION", "")
+        if not re.fullmatch(r"[a-f0-9]{40}", self.source_revision):
+            raise PortalError("Set CPIP_BOOK_SOURCE_REVISION to the exact 40-character source commit SHA.")
         self.app_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         try:
             os.chmod(self.app_dir, 0o700)
@@ -342,7 +409,7 @@ class BookPortal:
     def _build(self, edition_id: str, profile: str, cipher: str, cover_seed: str) -> dict[str, tuple[str, str]]:
         import tempfile
 
-        from tools.build_books import EPUB_NAME, PDF_NAME, COVER_NAME
+        from tools.build_books import EPUB_NAME, PDF_NAME, COVER_NAME, PRINTABLES_NAME
 
         with tempfile.TemporaryDirectory(prefix="cpip-book-build-", dir=self.data_dir) as temporary:
             root = Path(temporary)
@@ -353,6 +420,8 @@ class BookPortal:
                 "profile": profile,
                 "cipher": cipher,
                 "cover_seed": cover_seed,
+                "signing_key_fingerprint": self.signing_key_fingerprint,
+                "source_revision": self.source_revision,
             }
             config_path = root / "edition.json"
             config_path.write_text(json.dumps(config), encoding="utf-8")
@@ -386,6 +455,7 @@ class BookPortal:
                 "pdf": f"{Path(PDF_NAME).stem}-{edition_id}.pdf",
                 "epub": f"{Path(EPUB_NAME).stem}-{edition_id}.epub",
                 "cover": f"cover-{edition_id}.png",
+                "printables": PRINTABLES_NAME,
             }
             results: dict[str, tuple[str, str]] = {}
             for kind, filename in names.items():
@@ -396,12 +466,14 @@ class BookPortal:
                     raise PortalError("Edition artifact exceeded the configured size limit.")
                 if kind == "pdf" and not path.read_bytes().startswith(b"%PDF-"):
                     raise PortalError("Edition PDF failed format validation.")
-                if kind == "epub":
+                if kind in {"epub", "printables"}:
                     try:
                         with zipfile.ZipFile(path) as archive:
-                            if archive.testzip() is not None or archive.namelist()[0] != "mimetype":
+                            if archive.testzip() is not None:
+                                raise PortalError(f"Edition {kind} failed ZIP validation.")
+                            if kind == "epub" and archive.namelist()[0] != "mimetype":
                                 raise PortalError("Edition EPUB failed ZIP validation.")
-                            if archive.read("mimetype") != b"application/epub+zip":
+                            if kind == "epub" and archive.read("mimetype") != b"application/epub+zip":
                                 raise PortalError("Edition EPUB has the wrong media type.")
                     except (zipfile.BadZipFile, IndexError, KeyError) as error:
                         raise PortalError("Edition EPUB failed archive validation.") from error
@@ -424,11 +496,20 @@ class BookPortal:
         self._decode_and_authenticate(cipher)
         if profile not in PROFILES:
             raise PortalError("Unknown edition profile.")
+        if self.signing_key is None:
+            raise PortalError("A publisher Ed25519 signing key is required before editions can be issued.")
         edition_id = secrets.token_hex(12)
         next_token = secrets.token_urlsafe(32)
         next_cipher = self._new_cipher(edition_id, next_token)
         cover_seed = secrets.token_hex(32)
         artifacts = self._build(edition_id, profile, next_cipher, cover_seed)
+        signed_artifacts = {
+            "pdf": (*artifacts["pdf"], "application/pdf"),
+            "epub": (*artifacts["epub"], "application/epub+zip"),
+            "cover": (*artifacts["cover"], "image/png"),
+            "printables": (*artifacts["printables"], "application/zip"),
+        }
+        signed_artifacts.update(self._sign_edition(edition_id, profile, next_cipher, artifacts))
         self.store.record_edition(
             edition_id,
             profile,
@@ -437,18 +518,92 @@ class BookPortal:
             artifacts["epub"][0], artifacts["epub"][1],
             artifacts["cover"][0], artifacts["cover"][1],
             hashlib.sha256(next_cipher.encode("utf-8")).hexdigest(),
+            signed_artifacts,
         )
+        downloads = {
+            kind: {
+                "url": f"/v1/editions/{edition_id}/{kind}",
+                "sha256": signed_artifacts[kind][1],
+                "file": Path(signed_artifacts[kind][0]).name,
+            }
+            for kind in signed_artifacts
+        }
         return {
             "edition_id": edition_id,
             "profile": profile,
             "cipher": next_cipher,
-            "downloads": {
-                "pdf": {"url": f"/v1/editions/{edition_id}/pdf", "sha256": artifacts["pdf"][1]},
-                "epub": {"url": f"/v1/editions/{edition_id}/epub", "sha256": artifacts["epub"][1]},
-                "cover": {"url": f"/v1/editions/{edition_id}/cover", "sha256": artifacts["cover"][1]},
-            },
+            "downloads": downloads,
+            "signing_key_fingerprint": self.signing_key_fingerprint,
             "apps": self.available_apps(),
         }
+
+    def _sign_edition(
+        self,
+        edition_id: str,
+        profile: str,
+        cipher: str,
+        artifacts: dict[str, tuple[str, str]],
+    ) -> dict[str, tuple[str, str, str]]:
+        folder = self.data_dir / "editions" / edition_id
+        entries: dict[str, dict[str, object]] = {}
+        for kind in ("pdf", "epub", "cover", "printables"):
+            relative, expected_digest = artifacts[kind]
+            candidate = self.data_dir / relative
+            if candidate.is_symlink() or not candidate.is_file():
+                raise PortalError("Edition artifact is missing or unsafe for signing.")
+            path = candidate.resolve(strict=True)
+            try:
+                path.relative_to(folder.resolve(strict=True))
+            except ValueError as error:
+                raise PortalError("Edition artifact is outside its private edition directory.") from error
+            if path.is_symlink() or not path.is_file():
+                raise PortalError("Edition artifact is missing or unsafe for signing.")
+            actual = hashlib.sha256(path.read_bytes()).hexdigest()
+            if not hmac.compare_digest(actual, expected_digest):
+                raise PortalError("Edition artifact changed before signing.")
+            entries[kind] = {
+                "file": path.name,
+                "sha256": actual,
+                "size": path.stat().st_size,
+            }
+
+        manifest_payload = {
+            "book_title": "Raspberry Pi for Technical Support Operatives in Africa",
+            "edition_id": edition_id,
+            "profile": profile,
+            "issued_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "source_revision": self.source_revision,
+            "coffee_cipher_sha256": hashlib.sha256(cipher.encode("utf-8")).hexdigest(),
+            "artifacts": entries,
+        }
+        try:
+            manifest, signature, public_key, fingerprint = sign_manifest(manifest_payload, self.signing_key)
+        except EditionSignatureError as error:
+            raise PortalError("Could not create the signed edition manifest.") from error
+        if not hmac.compare_digest(fingerprint, self.signing_key_fingerprint):
+            raise PortalError("Edition signing key changed unexpectedly.")
+        files = {
+            "manifest": (MANIFEST_NAME, manifest, "application/json"),
+            "signature": (SIGNATURE_NAME, signature, "application/vnd.fieldkit.ed25519-signature"),
+            "public-key": (PUBLIC_KEY_NAME, public_key, "application/x-pem-file"),
+        }
+        result: dict[str, tuple[str, str, str]] = {}
+        for kind, (filename, data, content_type) in files.items():
+            path = folder / filename
+            try:
+                with path.open("xb") as stream:
+                    stream.write(data)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.chmod(path, 0o600)
+            except OSError as error:
+                raise PortalError("Could not store signed edition metadata.") from error
+            result[kind] = (
+                f"editions/{edition_id}/{filename}",
+                hashlib.sha256(data).hexdigest(),
+                content_type,
+            )
+        return result
 
     def artifact(self, edition_id: str, kind: str, cipher: str) -> tuple[Path, str, str]:
         auth_edition, _token = self._decode_and_authenticate(cipher)
@@ -457,14 +612,12 @@ class BookPortal:
         row = self.store.get_edition(edition_id)
         if row is None:
             raise PortalError("Edition not found.")
-        fields = {
-            "pdf": (row["pdf_name"], row["pdf_sha256"], "application/pdf"),
-            "epub": (row["epub_name"], row["epub_sha256"], "application/epub+zip"),
-            "cover": (row["cover_name"], row["cover_sha256"], "image/png"),
-        }
-        if kind not in fields:
+        artifact = self.store.get_edition_artifact(edition_id, kind)
+        if artifact is None:
             raise PortalError("Unknown edition artifact.")
-        relative, expected_hash, content_type = fields[kind]
+        relative = artifact["relative_name"]
+        expected_hash = artifact["sha256"]
+        content_type = artifact["content_type"]
         path = (self.data_dir / relative).resolve()
         try:
             path.relative_to(self.data_dir.resolve())
@@ -524,6 +677,12 @@ def config_from_env() -> tuple[BookPortal, int]:
         raise PortalError("Set CPIP_BOOK_TOKEN_PEPPER to an independent 32-byte-or-longer secret.")
     starter_hash = os.environ.get("CPIP_BOOK_STARTER_ANSWER_SHA256", _starter_answer_hash(STARTER_ANSWER))
     public_host = os.environ.get("CPIP_BOOK_DOMAIN", "").strip()
+    signing_key_text = os.environ.get("CPIP_BOOK_SIGNING_PRIVATE_KEY", "").strip()
+    source_revision = os.environ.get("CPIP_BOOK_SOURCE_REVISION", "").strip()
+    if not signing_key_text:
+        raise PortalError("Set CPIP_BOOK_SIGNING_PRIVATE_KEY to a protected Ed25519 PEM key path.")
+    if not re.fullmatch(r"[a-f0-9]{40}", source_revision):
+        raise PortalError("Set CPIP_BOOK_SOURCE_REVISION to the exact 40-character source commit SHA.")
     portal = BookPortal(
         data_dir,
         CPIPAdapter(cpip_origin, cpip_key),
@@ -531,6 +690,8 @@ def config_from_env() -> tuple[BookPortal, int]:
         starter_hash,
         app_dir,
         public_host or None,
+        Path(signing_key_text),
+        source_revision,
     )
     port = int(os.environ.get("CPIP_BOOK_PORTAL_PORT", "4310"))
     if not 1024 <= port <= 65535:
@@ -624,7 +785,10 @@ class PortalHandler(BaseHTTPRequestHandler):
             except PortalError as error:
                 self._json(401 if "Cipher" in str(error) else 400, {"error": str(error)})
             return
-        match = re.fullmatch(r"/v1/editions/([a-f0-9]{24})/(pdf|epub|cover)", parsed.path)
+        match = re.fullmatch(
+            r"/v1/editions/([a-f0-9]{24})/(pdf|epub|cover|printables|manifest|signature|public-key)",
+            parsed.path,
+        )
         app_match = re.fullmatch(
             r"/v1/apps/(linux-arm64|linux-x86_64|windows-x86_64|macos-arm64|macos-x86_64)",
             parsed.path,
@@ -693,12 +857,14 @@ class PortalHandler(BaseHTTPRequestHandler):
                     f'<form method="post" action="/download"><input type="hidden" name="cipher" value="{html.escape(result["cipher"])}">'
                     f'<input type="hidden" name="edition_id" value="{result["edition_id"]}"><input type="hidden" name="kind" value="{kind}">'
                     f'<button type="submit">Download {kind.upper()}</button></form>'
-                    for kind in ("pdf", "epub")
+                    for kind in ("pdf", "epub", "cover", "printables", "manifest", "signature", "public-key")
                 )
                 forms += self._app_forms(result["cipher"], result.get("apps", {}))
                 next_cipher = html.escape(result["cipher"])
+                fingerprint = html.escape(result["signing_key_fingerprint"])
                 page = self._landing(
                     f"<h2>Your edition is ready</h2><p>Edition {result['edition_id']} · profile {html.escape(profile)}</p>"
+                    f"<p>Ed25519 signing-key fingerprint: <code>{fingerprint}</code>. Compare it with the independently published event fingerprint before trusting the signature.</p>"
                     f"<p>Store this cipher for future CPIP Book Portal sessions:</p><textarea readonly rows=5 cols=72>{next_cipher}</textarea>{forms}"
                 )
                 self._send(201, page.encode("utf-8"), "text/html; charset=utf-8")

@@ -7,7 +7,9 @@ This part of the book is the practical core for technical support operatives mai
 1. [Identify hardware and choose an operating system](Imaging_and_First_Boot.md).
 2. [Use a consistent triage process](Support_Playbooks.md).
 3. [Plan backups, updates, handover, and sustained support](Field_Operations.md).
-4. Learn the [kernel, Bash, and practical command line](../0.%20Linux%20Foundations/README.md).
+4. Set a supported [security baseline and maintenance cycle](Secure_Baseline_and_Maintenance.md).
+5. Use the [printable participant field worksheet](../Hackathon/Participant_FieldKit_Worksheet.md) to record scope, tests, recovery, and handover.
+6. Learn the [kernel, Bash, and practical command line](../0.%20Linux%20Foundations/README.md).
 
 ## Keep the platform identity clear
 

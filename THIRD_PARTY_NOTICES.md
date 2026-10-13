@@ -6,4 +6,6 @@ Standalone executables bundle the Python interpreter and PyInstaller's bootloade
 
 The CPIP Book Portal separately runs CPIP and its declared dependencies; these retain their own licenses and are not CC0-scoped by this repository. The FieldKit standalone client does not bundle the CPIP server or its Python dependencies.
 
+`cryptography` is used for Ed25519 edition-manifest signing and verification. It is distributed under Apache-2.0 OR BSD-3-Clause; standalone app ZIPs include the installed version's component notice.
+
 No generated standalone binary may be uploaded as an official reader download until its component notices, target OS/architecture, and SHA-256 manifest are included in the CPIP portal release record.

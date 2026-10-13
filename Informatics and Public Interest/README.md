@@ -2,7 +2,12 @@
 
 Informatics is not only about building software. It includes how data is collected, who controls it, whose interests shape a system, what evidence supports its decisions, and who bears the consequences when it fails. This chapter connects that perspective to William Majanja’s **Muainishi** application series and to public-health and agricultural claims.
 
-The guide will critically examine documented harms, conflicts of interest, market incentives, privacy abuses, and regulatory failures. It will not present the unsupported blanket claim that “big corporations are killing people with genetically engineered crops.” Genetically engineered crops are not one product or exposure, and a company’s profit motive alone does not prove a specific causal effect or intent to cause harm. Strong criticism is most useful when a claim identifies the actor, product, exposure, evidence, affected population, and accountability finding.
+This section critically examines documented harms, conflicts of interest, market incentives, privacy abuses, and regulatory failures. It does not present the unsupported blanket claim that “big corporations are killing people with genetically engineered crops.” Genetically engineered crops are not one product or exposure, and a company’s profit motive alone does not prove a specific causal effect or intent to cause harm. Strong criticism is most useful when a claim identifies the actor, product, exposure, evidence, affected population, and accountability finding.
+
+## Further chapters
+
+- [Reviewing the Muainishi application series](Muainishi_Project_Review.md) — synthetic-data assessment of data flow, validation, clinical boundaries, and human review.
+- [Researching public harm and corporate accountability](Researching_Public_Harm_and_Accountability.md) — evidence ledger, hazard/exposure/cause distinctions, and a printable source-review worksheet.
 
 ## 1. The Muainishi application series
 

@@ -7,6 +7,10 @@ These chapters provide the operating-system and shell knowledge needed to suppor
 - [Linux kernel and system model](Linux_Kernel.md)
 - [Bash shell programming](Shell_Programming.md)
 - [Practical command-line recipes](Command_Line_Recipes.md)
+- [Files, users, and permissions](Files_Users_and_Permissions.md)
+- [Networking basics for support work](Networking_Basics.md)
+- [Services, logs, and recovery](Services_Logs_and_Recovery.md)
+- [Storage, packages, and recovery](Storage_Packages_and_Recovery.md)
 
 ## Platform tested for this edition
 

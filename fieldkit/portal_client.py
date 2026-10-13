@@ -15,6 +15,14 @@ import zipfile
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from .signatures import (
+    MANIFEST_NAME,
+    PUBLIC_KEY_NAME,
+    SIGNATURE_NAME,
+    EditionSignatureError,
+    verify_edition_directory,
+)
+
 
 MAX_JSON_BYTES = 1024 * 1024
 MAX_EDITION_BYTES = 128 * 1024 * 1024
@@ -167,14 +175,18 @@ def _download_one(
             try:
                 with zipfile.ZipFile(temporary_path) as archive:
                     if archive.testzip() is not None:
-                        raise PortalClientError("Standalone app bundle failed ZIP validation.")
+                        raise PortalClientError("Downloaded ZIP artifact failed integrity validation.")
                     names = archive.namelist()
                     if not names or any(name.startswith("/") or ".." in Path(name).parts for name in names):
-                        raise PortalClientError("Standalone app bundle contains an unsafe path.")
-                    if not any(Path(name).name.startswith("fieldkit") for name in names):
-                        raise PortalClientError("Standalone app bundle contains no FieldKit executable.")
-                    if "THIRD_PARTY_NOTICES.md" not in names:
-                        raise PortalClientError("Standalone app bundle is missing component notices.")
+                        raise PortalClientError("Downloaded ZIP artifact contains an unsafe path.")
+                    if destination.name == "field-hackathon-printables.zip":
+                        if "printables/Coffee_Pot_Snake_Paper_Cryptex.svg" not in names:
+                            raise PortalClientError("Printable pack is missing the full-scale cryptex template.")
+                    else:
+                        if not any(Path(name).name.startswith("fieldkit") for name in names):
+                            raise PortalClientError("Standalone app bundle contains no FieldKit executable.")
+                        if "THIRD_PARTY_NOTICES.md" not in names:
+                            raise PortalClientError("Standalone app bundle is missing component notices.")
             except (zipfile.BadZipFile, KeyError, IndexError) as error:
                 raise PortalClientError("Standalone app artifact is not a valid ZIP bundle.") from error
         if destination.exists():
@@ -199,20 +211,28 @@ def create_edition(
     profile: str,
     output_dir: Path,
     origin: str | None = None,
+    trusted_fingerprint: str | None = None,
 ) -> dict[str, object]:
     """Request an edition, verify same-origin artifact hashes, and download it."""
+    if not trusted_fingerprint:
+        raise PortalClientError("Supply the publisher signing-key fingerprint from an independent event or release source.")
     if not re.fullmatch(r"[a-z][a-z0-9-]{1,31}", profile):
         raise PortalClientError("Profile name must be a short lowercase identifier.")
     response = _json_request("POST", "/v1/editions", {"profile": profile}, cipher=cipher, origin=origin, timeout=60)
     edition_id_value = response.get("edition_id")
     next_cipher = response.get("cipher")
     downloads = response.get("downloads")
+    signing_fingerprint = response.get("signing_key_fingerprint")
     if not isinstance(edition_id_value, str) or not re.fullmatch(r"[a-f0-9]{24}", edition_id_value):
         raise PortalClientError("Portal returned an invalid edition ID.")
     if not isinstance(next_cipher, str) or not next_cipher:
         raise PortalClientError("Portal returned no per-edition Coffee Cipher.")
     if not isinstance(downloads, dict):
         raise PortalClientError("Portal returned no edition download manifest.")
+    if not isinstance(signing_fingerprint, str) or not SHA256_RE.fullmatch(signing_fingerprint):
+        raise PortalClientError("Portal returned no valid publisher signing-key fingerprint.")
+    if signing_fingerprint.lower() != trusted_fingerprint.lower().removeprefix("sha256:").replace(":", "").strip():
+        raise PortalClientError("Portal signing key does not match the independently trusted fingerprint.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     edition_dir = output_dir / edition_id_value
@@ -224,19 +244,38 @@ def create_edition(
     with tempfile.TemporaryDirectory(prefix=".fieldkit-edition-", dir=output_dir) as temporary:
         staging = Path(temporary)
         manifest_files: dict[str, dict[str, str]] = {}
-        for kind, suffix in (("pdf", ".pdf"), ("epub", ".epub")):
+        local_names = {
+            "pdf": f"Raspberry-Pi-Field-Guide-{edition_id_value}.pdf",
+            "epub": f"Raspberry-Pi-Field-Guide-{edition_id_value}.epub",
+            "cover": "cover.png",
+            "printables": "field-hackathon-printables.zip",
+            "manifest": MANIFEST_NAME,
+            "signature": SIGNATURE_NAME,
+            "public-key": PUBLIC_KEY_NAME,
+        }
+        for kind, filename in local_names.items():
             item = downloads.get(kind)
             if not isinstance(item, dict):
-                raise PortalClientError(f"Portal did not provide a {kind.upper()} artifact.")
+                raise PortalClientError(f"Portal did not provide the signed-edition {kind} artifact.")
             url = item.get("url")
             sha256 = item.get("sha256")
             if not isinstance(url, str) or not isinstance(sha256, str):
-                raise PortalClientError(f"Portal supplied an invalid {kind.upper()} artifact record.")
-            filename = f"Raspberry-Pi-Field-Guide-{edition_id_value}{suffix}"
+                raise PortalClientError(f"Portal supplied an invalid {kind} artifact record.")
             saved = _download_one(url, staging / filename, sha256, next_cipher, origin=origin)
             manifest_files[kind] = {"file": filename, "sha256": sha256}
+        signed_manifest = verify_edition_directory(staging, trusted_fingerprint)
+        if signed_manifest.get("edition_id") != edition_id_value or signed_manifest.get("profile") != profile:
+            raise PortalClientError("Signed manifest edition or profile does not match the portal response.")
+        if signed_manifest.get("signing_key_fingerprint") != signing_fingerprint:
+            raise PortalClientError("Signed manifest key does not match the portal response.")
         write_new_private_file(staging / "coffee-cipher.txt", (next_cipher + "\n").encode("utf-8"))
-        manifest = {"edition_id": edition_id_value, "profile": profile, "files": manifest_files}
+        manifest = {
+            "edition_id": edition_id_value,
+            "profile": profile,
+            "signing_key_fingerprint": signing_fingerprint,
+            "signature_verified": True,
+            "files": manifest_files,
+        }
         write_new_private_file(
             staging / "edition.json",
             (json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8"),

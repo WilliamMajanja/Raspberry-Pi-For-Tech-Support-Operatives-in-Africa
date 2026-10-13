@@ -9,7 +9,12 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+from fieldkit.signatures import verify_edition_directory
 from portal.book_portal import BookPortal, PortalError, PortalHTTPServer, STARTER_ANSWER
+from tools.build_books import build_printables_bundle
 
 
 class FakeCPIP:
@@ -40,6 +45,11 @@ class TestBookPortal(BookPortal):
         for kind, (name, data) in paths.items():
             (base / name).write_bytes(data)
             result[kind] = (f"editions/{edition_id}/{name}", hashlib.sha256(data).hexdigest())
+        printables = build_printables_bundle(base)
+        result["printables"] = (
+            f"editions/{edition_id}/{printables.name}",
+            hashlib.sha256(printables.read_bytes()).hexdigest(),
+        )
         return result
 
 
@@ -47,7 +57,21 @@ class BookPortalTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         answer_hash = hashlib.sha256(STARTER_ANSWER.encode()).hexdigest()
-        self.portal = TestBookPortal(Path(self.temporary.name), FakeCPIP(), b"t" * 32, answer_hash)
+        self.private_key = Ed25519PrivateKey.generate()
+        self.signing_key_path = Path(self.temporary.name) / "signing-key.pem"
+        self.signing_key_path.write_bytes(
+            self.private_key.private_bytes(
+                serialization.Encoding.PEM,
+                serialization.PrivateFormat.PKCS8,
+                serialization.NoEncryption(),
+            )
+        )
+        self.signing_key_path.chmod(0o600)
+        self.portal = TestBookPortal(
+            Path(self.temporary.name), FakeCPIP(), b"t" * 32, answer_hash,
+            signing_private_key_path=self.signing_key_path,
+            source_revision="a" * 40,
+        )
 
     def tearDown(self):
         self.temporary.cleanup()
@@ -57,9 +81,16 @@ class BookPortalTests(unittest.TestCase):
         self.assertIn("cipher", first)
         result = self.portal.create_edition(first["cipher"], "field-technician", "test-client")
         self.assertEqual(result["profile"], "field-technician")
-        self.assertEqual(set(result["downloads"]), {"pdf", "epub", "cover"})
+        self.assertEqual(
+            set(result["downloads"]),
+            {"pdf", "epub", "cover", "printables", "manifest", "signature", "public-key"},
+        )
         self.assertNotEqual(result["cipher"], first["cipher"])
         self.assertEqual(self.portal.store.verify_chain(), [])
+        edition_dir = self.portal.data_dir / "editions" / result["edition_id"]
+        verified = verify_edition_directory(edition_dir, result["signing_key_fingerprint"])
+        self.assertEqual(verified["edition_id"], result["edition_id"])
+        self.assertEqual(verified["source_revision"], "a" * 40)
 
     def test_missing_or_wrong_cipher_is_rejected(self):
         with self.assertRaises(PortalError):

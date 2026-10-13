@@ -46,6 +46,7 @@ def build(output_dir: Path, expected_target: str | None = None) -> tuple[Path, P
     try:
         import PyInstaller  # noqa: F401
         pyinstaller_distribution = importlib.metadata.distribution("pyinstaller")
+        cryptography_distribution = importlib.metadata.distribution("cryptography")
     except ImportError as error:
         raise RuntimeError("Install the pinned build-only dependencies from tools/requirements-build.txt.") from error
 
@@ -89,6 +90,15 @@ def build(output_dir: Path, expected_target: str | None = None) -> tuple[Path, P
         if not pyinstaller_license or not Path(pyinstaller_license).is_file():
             raise RuntimeError("PyInstaller's COPYING.txt license notice was not found in the build environment.")
         archive.write(pyinstaller_license, "LICENSES/PyInstaller-COPYING.txt")
+        for license_name in ("LICENSE.APACHE", "LICENSE.BSD"):
+            license_path = next(
+                (cryptography_distribution.locate_file(item) for item in cryptography_distribution.files or []
+                 if str(item).lower().endswith("/licenses/" + license_name.lower())),
+                None,
+            )
+            if not license_path or not Path(license_path).is_file():
+                raise RuntimeError(f"cryptography's {license_name} notice was not found in the build environment.")
+            archive.write(license_path, f"LICENSES/cryptography-{license_name}")
         python_license_candidates = (
             Path(sys.base_prefix) / "LICENSE.txt",
             Path(sys.base_prefix) / "LICENSE",

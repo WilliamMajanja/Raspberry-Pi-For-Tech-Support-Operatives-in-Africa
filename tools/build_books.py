@@ -34,6 +34,7 @@ PUBLISHER = "Hack with Raspberry Pi community"
 PDF_NAME = "Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.pdf"
 EPUB_NAME = "Raspberry-Pi-for-Technical-Support-Operatives-in-Africa.epub"
 COVER_NAME = "cover.png"
+PRINTABLES_NAME = "field-hackathon-printables.zip"
 PROFILE_PATHS = {
     "field-technician": "Prioritized sequence: Pi field support, Linux foundations, then FieldKit recipes; all other reference chapters follow.",
     "operations-lead": "Prioritized sequence: field operations, incident triage, safeguarding, and service continuity; all other reference chapters follow.",
@@ -189,8 +190,10 @@ def source_files() -> list[Path]:
     candidates.extend((ROOT / "portal").rglob("*.py"))
     candidates.extend((ROOT / "Challenges").glob("*.scad"))
     candidates.extend((ROOT / "Challenges").glob("*.svg"))
+    candidates.extend((ROOT / "illustrations").rglob("*.svg"))
     candidates.extend((ROOT / "portal").glob("*.example"))
     candidates.extend((ROOT / "portal").glob("*.sample"))
+    candidates.extend((ROOT / "portal").glob("*.txt"))
     candidates.extend((ROOT / "tests").rglob("*.py"))
     candidates.extend((ROOT / "tools").glob("*.py"))
     candidates.extend((ROOT / "tools").glob("*.txt"))
@@ -228,6 +231,39 @@ def make_source_appendix(temp_dir: Path) -> Path:
     appendix = temp_dir / "source-appendix.md"
     appendix.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return appendix
+
+
+def build_printables_bundle(output_dir: Path) -> Path:
+    """Package source worksheets and the native-size A4 SVG without rescaling."""
+    files = (
+        (ROOT / "Challenges" / "Coffee_Pot_Snake_Paper_Cryptex.svg", "printables/Coffee_Pot_Snake_Paper_Cryptex.svg"),
+        (ROOT / "Hackathon" / "Participant_FieldKit_Worksheet.md", "printables/Participant_FieldKit_Worksheet.md"),
+        (ROOT / "Raspberry Pi Field Support" / "Security_Assessment_Playbook.md", "printables/Security_Assessment_Playbook.md"),
+        (ROOT / "Peace Operations Field Support" / "Data_Stewardship_and_Offline_Systems.md", "printables/Data_Stewardship_and_Offline_Systems.md"),
+        (ROOT / "Informatics and Public Interest" / "Researching_Public_Harm_and_Accountability.md", "printables/Researching_Public_Harm_and_Accountability.md"),
+    )
+    for source, _archive_name in files:
+        if source.is_symlink() or not source.is_file():
+            raise FileNotFoundError(f"Required printable is missing or unsafe: {source}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    bundle = output_dir / PRINTABLES_NAME
+    readme = (
+        "Field hackathon printable pack\n"
+        "The cryptex SVG is A4 at intrinsic 210 x 297 mm. Print at 100% / actual size; disable fit-to-page.\n"
+        "Markdown worksheets are readable offline and may be printed from a Markdown editor. Use synthetic data only.\n"
+        "Official CPIP editions include this pack in the publisher-signed manifest. Verify before use.\n"
+    ).encode("utf-8")
+    with zipfile.ZipFile(bundle, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        entries = [(None, "printables/README.txt", readme), *[(source, name, None) for source, name in files]]
+        for source, name, content in entries:
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100600 << 16
+            archive.writestr(info, content if content is not None else source.read_bytes())
+    with zipfile.ZipFile(bundle) as archive:
+        if archive.testzip() is not None:
+            raise RuntimeError("Printable pack failed ZIP integrity validation.")
+    return bundle
 
 
 def add_heading_ids(text: str, page_id: str) -> tuple[str, dict[str, str]]:
@@ -323,6 +359,24 @@ def local_link_target(
     return url
 
 
+def local_image_target(destination: str, source: Path) -> str | None:
+    """Copy a local image reference to a safe path under the book build root."""
+    raw = destination.strip()
+    if raw.startswith("<") and raw.endswith(">"):
+        raw = raw[1:-1]
+    parsed = urlsplit(raw)
+    if parsed.scheme or parsed.netloc or not parsed.path:
+        return None
+    target = (source.parent / unquote(parsed.path)).resolve()
+    try:
+        relative = target.relative_to(ROOT).as_posix()
+    except ValueError:
+        return None
+    if not target.is_file() or target.is_symlink():
+        return None
+    return relative + (f"#{quote(unquote(parsed.fragment), safe='-._~')}" if parsed.fragment else "")
+
+
 def rewrite_line_links(
     line: str,
     source: Path,
@@ -343,12 +397,14 @@ def rewrite_line_links(
                 index = closing + len(run)
                 continue
 
-        if line[index] != "[" or (index > 0 and line[index - 1] == "!"):
+        is_image = line[index] == "!" and index + 1 < len(line) and line[index + 1] == "["
+        label_start = index + 1 if is_image else index
+        if line[label_start] != "[" or (index > 0 and line[index - 1] == "!"):
             output.append(line[index])
             index += 1
             continue
 
-        label_end = index + 1
+        label_end = label_start + 1
         escaped = False
         while label_end < len(line):
             char = line[label_end]
@@ -392,7 +448,11 @@ def rewrite_line_links(
         if token_end < 0:
             token_end = len(content)
         token = content[leading:token_end]
-        replacement = local_link_target(token, source, page_ids, heading_ids)
+        replacement = (
+            local_image_target(token, source)
+            if is_image
+            else local_link_target(token, source, page_ids, heading_ids)
+        )
         output.append(line[index : dest_start + leading])
         output.append(replacement if replacement is not None else token)
         output.append(line[dest_start + token_end : content_end + 1])
@@ -465,7 +525,9 @@ def build(
     edition_profile: str | None = None,
     edition_cipher: str | None = None,
     cover_seed: str | None = None,
-) -> tuple[Path, Path, Path]:
+    signing_key_fingerprint: str | None = None,
+    source_revision: str | None = None,
+) -> tuple[Path, Path, Path, Path]:
     pandoc = shutil.which("pandoc")
     chromium = shutil.which("chromium") or shutil.which("chromium-browser")
     if not pandoc:
@@ -485,8 +547,12 @@ def build(
             raise ValueError("edition cipher must be a single-line CPIP additions value")
         if not cover_seed or not re.fullmatch(r"[a-f0-9]{64}", cover_seed):
             raise ValueError("personalized editions require a 32-byte hexadecimal cover seed")
-    elif edition_profile or edition_cipher or cover_seed:
-        raise ValueError("edition ID, profile, cipher, and cover seed must be supplied together")
+        if not signing_key_fingerprint or not re.fullmatch(r"[a-f0-9]{64}", signing_key_fingerprint):
+            raise ValueError("personalized editions require the publisher Ed25519 key fingerprint")
+        if not source_revision or not re.fullmatch(r"[a-f0-9]{40}", source_revision):
+            raise ValueError("personalized editions require the exact 40-character source commit SHA")
+    elif edition_profile or edition_cipher or cover_seed or signing_key_fingerprint or source_revision:
+        raise ValueError("edition ID, profile, cipher, cover seed, signing fingerprint, and source revision must be supplied together")
 
     documents = reading_order()
     if edition_profile:
@@ -499,6 +565,9 @@ def build(
 
     with tempfile.TemporaryDirectory(prefix="raspberry-pi-book-") as temporary:
         temp_dir = Path(temporary)
+        illustrations = ROOT / "illustrations"
+        if illustrations.is_dir():
+            shutil.copytree(illustrations, temp_dir / "illustrations")
         prepared_paths, _ = prepare_documents(documents, temp_dir)
         source_appendix = make_source_appendix(temp_dir)
         shutil.copyfile(CSS, temp_dir / "book.css")
@@ -516,16 +585,22 @@ def build(
             edition_card.write_text(
                 "# Your Personalized Field-Book Edition\n\n"
                 f"Edition ID: `{edition_id}`\n\n"
+                f"Source revision: `{source_revision}`\n\n"
                 f"Reader path: {PROFILE_PATHS[edition_profile]}\n\n"
                 "## Your Field Exercise\n\n"
                 f"{exercise}\n\n"
                 "This edition places the recommended pages first; every reference page is still included. Technical facts, safety boundaries, citations, and core instructions are identical across profiles; only page order, this suggested path, the synthetic practice scenario, and the cover variation differ.\n\n"
-                "## Coffee Cipher\n\n"
+                "## Coffee Cipher and signed edition manifest\n\n"
                 "This per-edition CPIP cipher is a bearer code for the CPIP Book Portal. "
                 "It is printed in this copy so you can use the portal; anyone who receives "
                 "a copy can also read and share it. It is not DRM, a personal identity, or a "
                 "secret suitable for protecting unrelated accounts. The cipher is a puzzle/portal "
                 "credential only; it does not encrypt this book.\n\n"
+                "The portal also supplies a detached Ed25519 signature over `edition-manifest.json`. "
+                "The manifest binds the PDF, EPUB, and cover SHA-256 digests to this edition and source revision. "
+                "Verify the signature and all hashes with FieldKit using the publisher’s independently published fingerprint. "
+                "The Coffee Cipher is not the signature.\n\n"
+                f"Publisher signing-key fingerprint: `{signing_key_fingerprint}`\n\n"
                 "```text\n"
                 f"{edition_cipher}\n"
                 "```\n",
@@ -629,7 +704,8 @@ def build(
         bad_member = archive.testzip()
         if bad_member:
             raise RuntimeError(f"EPUB ZIP archive is corrupt at {bad_member}.")
-    return pdf_path, epub_path, cover_path
+    printables_path = build_printables_bundle(output_dir)
+    return pdf_path, epub_path, cover_path, printables_path
 
 
 def main() -> int:
@@ -658,15 +734,17 @@ def main() -> int:
             edition = json.loads(config_path.read_text(encoding="utf-8"))
             if not isinstance(edition, dict):
                 raise ValueError("edition config must be a JSON object")
-            required = {"edition_id", "profile", "cipher", "cover_seed"}
+            required = {"edition_id", "profile", "cipher", "cover_seed", "signing_key_fingerprint", "source_revision"}
             if set(edition) != required or not all(isinstance(edition[key], str) for key in required):
                 raise ValueError("edition config must contain only string edition_id/profile/cipher/cover_seed fields")
-        pdf_path, epub_path, cover_path = build(
+        pdf_path, epub_path, cover_path, printables_path = build(
             output_dir,
             edition_id=edition.get("edition_id") if edition else None,
             edition_profile=edition.get("profile") if edition else None,
             edition_cipher=edition.get("cipher") if edition else None,
             cover_seed=edition.get("cover_seed") if edition else None,
+            signing_key_fingerprint=edition.get("signing_key_fingerprint") if edition else None,
+            source_revision=edition.get("source_revision") if edition else None,
         )
     except (FileNotFoundError, RuntimeError, ValueError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
@@ -674,6 +752,7 @@ def main() -> int:
     print(f"PDF:  {pdf_path.relative_to(ROOT) if pdf_path.is_relative_to(ROOT) else pdf_path}")
     print(f"EPUB: {epub_path.relative_to(ROOT) if epub_path.is_relative_to(ROOT) else epub_path}")
     print(f"Cover: {cover_path.relative_to(ROOT) if cover_path.is_relative_to(ROOT) else cover_path}")
+    print(f"Printables: {printables_path.relative_to(ROOT) if printables_path.is_relative_to(ROOT) else printables_path}")
     print(f"Included {len(reading_order())} Markdown pages in SUMMARY.md order.")
     return 0
 

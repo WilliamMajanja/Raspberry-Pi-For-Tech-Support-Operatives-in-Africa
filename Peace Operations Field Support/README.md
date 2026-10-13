@@ -9,6 +9,7 @@ The key operational lesson is to support qualified people and established proced
 - [Mine action and explosive-hazard support](Mine_Action_and_Explosive_Hazards.md)
 - [Child protection, Women, Peace and Security, and resolutions](Child_Protection_and_WPS.md)
 - [Security Council resolution reference](Security_Council_Resolution_Reference.md)
+- [Data stewardship and offline information systems](Data_Stewardship_and_Offline_Systems.md)
 
 ## High-impact practices covered
 

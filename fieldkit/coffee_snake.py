@@ -132,7 +132,8 @@ def render_svg(seed: bytes, variant_id: str | None = None) -> str:
   <text x="130" y="400" fill="{foreground}" font-family="sans-serif" font-size="82" font-weight="700">Raspberry Pi</text>
   <text x="130" y="505" fill="{foreground}" font-family="sans-serif" font-size="57" font-weight="700">for Technical Support</text>
   <text x="130" y="585" fill="{accent}" font-family="sans-serif" font-size="57" font-weight="700">Operatives in Africa</text>
-  <text x="135" y="665" fill="{foreground}" fill-opacity=".8" font-family="sans-serif" font-size="27">A field guide to Raspberry Pi, Linux, and responsible support</text>
+   <text x="135" y="665" fill="{foreground}" fill-opacity=".8" font-family="sans-serif" font-size="27">A field guide to Raspberry Pi, Linux, and responsible support</text>
+   <text x="135" y="715" fill="{accent}" font-family="sans-serif" font-size="25" font-weight="700" letter-spacing="2">FIELD INFORMATICS HACKATHON EDITION</text>
   <rect x="100" y="760" width="1400" height="1120" rx="26" fill="{background_b}" stroke="{accent}" stroke-opacity=".7" stroke-width="3"/>
   <text x="800" y="845" text-anchor="middle" fill="{orange}" font-family="sans-serif" font-size="26" font-weight="700" letter-spacing="5">THE COFFEE POT SNAKE</text>
   <text x="800" y="888" text-anchor="middle" fill="{accent}" font-family="sans-serif" font-size="20">ORIGINAL ASCII ART · NO EXTERNAL ASSETS</text>

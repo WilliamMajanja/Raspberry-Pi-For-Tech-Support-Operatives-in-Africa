@@ -18,8 +18,12 @@ import unittest
 import urllib.request
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
 from portal.cpip_adapter import CPIPAdapter
 from portal.book_portal import BookPortal, STARTER_ANSWER
+from tools.build_books import build_printables_bundle
 
 
 class LiveCPIPIntegrationTests(unittest.TestCase):
@@ -99,10 +103,28 @@ class LiveCPIPIntegrationTests(unittest.TestCase):
                                 f"editions/{edition_id}/{name}",
                                 hashlib.sha256(content).hexdigest(),
                             )
+                        printables = build_printables_bundle(folder)
+                        result["printables"] = (
+                            f"editions/{edition_id}/{printables.name}",
+                            hashlib.sha256(printables.read_bytes()).hexdigest(),
+                        )
                         return result
 
                 starter_hash = hashlib.sha256(STARTER_ANSWER.encode("utf-8")).hexdigest()
-                portal = SmokePortal(Path(data_dir) / "portal", client, b"x" * 32, starter_hash)
+                signing_key_path = Path(data_dir) / "edition-signing-key.pem"
+                signing_key_path.write_bytes(
+                    Ed25519PrivateKey.generate().private_bytes(
+                        serialization.Encoding.PEM,
+                        serialization.PrivateFormat.PKCS8,
+                        serialization.NoEncryption(),
+                    )
+                )
+                signing_key_path.chmod(0o600)
+                portal = SmokePortal(
+                    Path(data_dir) / "portal", client, b"x" * 32, starter_hash,
+                    signing_private_key_path=signing_key_path,
+                    source_revision="b" * 40,
+                )
                 starter = portal.bootstrap(STARTER_ANSWER, "loopback-test")
                 edition = portal.create_edition(starter["cipher"], "field-technician", "loopback-test")
                 path, _mime, digest = portal.artifact(edition["edition_id"], "pdf", edition["cipher"])

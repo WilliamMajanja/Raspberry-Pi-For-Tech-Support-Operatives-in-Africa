@@ -1,0 +1,2 @@
+# Portal manifest signatures and verification use Ed25519.
+cryptography==50.0.2

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="216mm" height="62mm" viewBox="0 0 1080 310" role="img" aria-labelledby="title desc">
+  <title id="title">Safe field-support loop</title>
+  <desc id="desc">Six steps: confirm scope and impact, observe, record, agree a hypothesis, make one reversible change, then verify, roll back or hand over.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#286c72"/></marker>
+    <style>
+      .card{fill:#f1f7f6;stroke:#1c5359;stroke-width:4;rx:18}
+      .num{font:700 24px sans-serif;fill:#fff}
+      .title{font:700 23px sans-serif;fill:#173b40;text-anchor:middle}
+      .note{font:18px sans-serif;fill:#26383a;text-anchor:middle}
+      .arrow{stroke:#286c72;stroke-width:6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1080" height="310" fill="#fff"/>
+  <g transform="translate(25 58)">
+    <g><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">1</text><text class="title" x="75" y="72"><tspan x="75">Confirm</tspan><tspan x="75" dy="28">scope</tspan></text><text class="note" x="75" y="145"><tspan x="75">owner · impact</tspan><tspan x="75" dy="24">stop condition</tspan></text></g>
+    <path class="arrow" d="M155 95h20"/>
+    <g transform="translate(180)"><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">2</text><text class="title" x="75" y="88">Observe</text><text class="note" x="75" y="145"><tspan x="75">read-only</tspan><tspan x="75" dy="24">checks first</tspan></text></g>
+    <path class="arrow" d="M335 95h20"/>
+    <g transform="translate(360)"><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">3</text><text class="title" x="75" y="88">Record</text><text class="note" x="75" y="145"><tspan x="75">time · evidence</tspan><tspan x="75" dy="24">sanitize output</tspan></text></g>
+    <path class="arrow" d="M515 95h20"/>
+    <g transform="translate(540)"><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">4</text><text class="title" x="75" y="72"><tspan x="75">Agree</tspan><tspan x="75" dy="28">hypothesis</tspan></text><text class="note" x="75" y="145"><tspan x="75">owner approves</tspan><tspan x="75" dy="24">next step</tspan></text></g>
+    <path class="arrow" d="M695 95h20"/>
+    <g transform="translate(720)"><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">5</text><text class="title" x="75" y="72"><tspan x="75">Change</tspan><tspan x="75" dy="28">reversibly</tspan></text><text class="note" x="75" y="145"><tspan x="75">one change</tspan><tspan x="75" dy="24">with rollback</tspan></text></g>
+    <path class="arrow" d="M875 95h20"/>
+    <g transform="translate(900)"><rect class="card" width="150" height="190"/><circle cx="24" cy="24" r="20" fill="#1c5359"/><text class="num" x="24" y="32" text-anchor="middle">6</text><text class="title" x="75" y="72"><tspan x="75">Verify &amp;</tspan><tspan x="75" dy="28">handover</tspan></text><text class="note" x="75" y="145"><tspan x="75">restore if needed</tspan><tspan x="75" dy="24">record outcome</tspan></text></g>
+  </g>
+</svg>

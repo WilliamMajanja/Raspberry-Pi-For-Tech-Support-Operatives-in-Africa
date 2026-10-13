@@ -9,6 +9,7 @@ This self-study track borrows the **progressive level, prompt, hint, flag, and a
 - Flags are learning tokens, not credentials or access tokens. They do not authenticate to a service.
 - Cryptography levels use **toy encodings and concepts**. They do not teach breaking real encryption or attacking systems.
 - Work on the worksheet offline if desired. The [answer key](Answer_Key.md) contains spoilers.
+- Hackathon teams can use the [field-hackathon handbook](../Hackathon/Field_Hackathon_Handbook.md) and [participant worksheet](../Hackathon/Participant_FieldKit_Worksheet.md).
 
 ## How to play
 

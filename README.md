@@ -22,6 +22,8 @@ This guide is designed for technical support operatives working across Africa’
 - [Peace Operations field-support context](Peace%20Operations%20Field%20Support/README.md)
 - [Informatics, public health, and corporate accountability](Informatics%20and%20Public%20Interest/README.md)
 - [Zero-dependency quizzes and CTF-style challenges](Challenges/README.md)
+- [Field Informatics and Raspberry Pi Hackathon Handbook](Hackathon/Field_Hackathon_Handbook.md)
+- [Participant FieldKit worksheet](Hackathon/Participant_FieldKit_Worksheet.md)
 - [CPIP- user guide](16.%20CPIP-%20Guide/README.md)
 - [William Majanja’s Informatics portfolio](1.%20Introduction/William_Majanja.md)
 
@@ -30,15 +32,20 @@ This guide is designed for technical support operatives working across Africa’
 - **Raspberry Pi support:** model-aware setup, OS imaging, first boot, connectivity, troubleshooting, safe remote administration, updates, backups, and handover.
 - **Linux foundations:** the kernel and user-space model, Bash scripting, and practical command-line recipes with explanations and checks.
 - **System basics:** files, accounts, permissions, services, logs, and networking explained before being used in recipes.
+- **System recovery:** storage, safe package changes, backups, restore testing, and owner-approved recovery procedures.
 - **African field operations:** offline-friendly procedures, locally adaptable communication and training, reliable recovery, privacy, and site-specific constraints without assuming one context fits all.
 - **Peace-support and humanitarian context:** safe technical support for mine-action information systems, child-protection data, WPS participation, and relevant UN Security Council frameworks. This is not EOD, peacekeeper, or child-protection operational training.
 - **Public-interest Informatics:** the Muainishi application series, health-data safeguards, corporate-accountability evidence, and careful distinctions between GE crops, specific traits, pesticide exposures, cancer hazards, and exposure-specific risks.
 - **Security operations:** authorization, least privilege, verification, recovery, and safe assessment practices integrated into support work. Exercises use owned or explicitly authorized systems only.
 - **FieldKit:** original, offline-friendly support utilities with source code and tests; no external Python packages are required.
+- **Field hackathon:** four scoped build tracks, team and organizer guides, judging rubric, signed-edition verification, and printable participant worksheets.
+- **Field visuals:** original support, networking, data-lifecycle, and Informatics-review diagrams embedded in the reading flow.
 - **Self-study challenges:** Base and Crypto tracks with quiz prompts and flags, solvable from the book and standard shell tools without installing challenge software.
 - **CPIP- and Informatics projects:** a version-aware guide to William Majanja’s Coffee Pot Internet Protocol and selected projects from both GitHub accounts.
 
 The book is **zero-install to read and learn from**: core lessons and exercises need no account, site generator, external dataset, or package installation. The standalone generator bundles its runtime for supported platforms. PDF/EPUB production and the CPIP distribution service have separate maintainer requirements.
+
+Each hackathon participant can request a profile-ordered copy with a per-edition CPIP Coffee Cipher. A detached Ed25519 signature on the release manifest binds the exact PDF/EPUB hashes; it is separate from the Coffee Cipher. Verify with the publisher’s independently distributed public-key fingerprint. The cipher is a shareable portal bearer credential—not a signature, identity check, encryption key, or DRM.
 
 ## Design and reading experience
 

@@ -4,8 +4,8 @@ FieldKit is an original CC0-scoped support utility suite. Its local diagnostic a
 
 ## Requirements and run
 
-- Source execution: Python 3.11 or newer; no third-party modules.
-- Standalone releases: per-platform ZIP bundles include the executable and runtime/component notices. Users do not install Python or CPIP packages separately; the CPIP service runs on the portal host.
+- Core source commands: Python 3.11 or newer and the standard library. Verifying a publisher-signed edition additionally requires `cryptography`; install the pin in `portal/requirements.txt` or use a standalone bundle.
+- Standalone releases: per-platform ZIP bundles include the executable, bundled Ed25519 verifier, and runtime/component notices. Users do not install Python or CPIP packages separately; the CPIP service runs on the portal host.
 - Standalone build dependency: maintainers use the pinned packages in `tools/requirements-build.txt`; these are not bundled as reader-side requirements.
 - Tests: Python's built-in `unittest`.
 
@@ -68,17 +68,20 @@ python3 -m fieldkit cover --seed 0123456789abcdef0123456789abcdef --output-dir .
 
 ### `portal`
 
-`portal bootstrap` submits the public starter puzzle and saves the issued CPIP Coffee Cipher to a private local file. `portal edition` uses that cipher to request a reader path and download its personalized PDF/EPUB from the configured CPIP Book Portal. Downloads are checked against the portal's SHA-256 manifest and are saved in a new, owner-only edition directory.
+`portal bootstrap` submits the public starter puzzle and saves the issued CPIP Coffee Cipher to a private local file. `portal edition` uses that cipher to request a reader path and download its personalized PDF/EPUB, manifest, detached signature, cover, and public key from the configured CPIP Book Portal. It verifies the Ed25519 signature against the independently supplied fingerprint and checks every signed artifact hash before saving the edition in a new, owner-only directory.
 
 ```bash
 python3 -m fieldkit portal bootstrap
-python3 -m fieldkit portal edition --profile field-technician
+python3 -m fieldkit portal edition --profile field-technician --signing-key-fingerprint PUBLISHER_SHA256_FINGERPRINT
 python3 -m fieldkit portal app --target linux-arm64
+python3 -m fieldkit verify-edition "$HOME/field-book/0123456789abcdef01234567" --trusted-fingerprint PUBLISHER_SHA256_FINGERPRINT
 ```
 
 Set `CPIP_BOOK_PORTAL_ORIGIN` to the official HTTPS portal origin. The cipher is a shareable bearer code, not DRM or proof of identity. If it is included in a book copy, anyone who has that copy can use the portal with it.
 
-The standalone app bundles the local FieldKit client, not the CPIP server. Bundles for other supported targets are downloaded only through the CPIP Portal after a valid cipher is supplied.
+The standalone app bundles the local FieldKit client, including its Ed25519 verification dependency, not the CPIP server. Bundles for other supported targets are downloaded only through the CPIP Portal after a valid cipher is supplied.
+
+The Coffee Cipher authorizes portal requests; it is not the digital signature. The publisher signature authenticates the manifest and exact file hashes, not the correctness of the book or a reader’s identity. Obtain the key fingerprint through an independent trusted event/release channel before verification. The downloaded public key alone is not a trust anchor.
 
 ## Operational limits
 

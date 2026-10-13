@@ -2,6 +2,8 @@
 
 Network troubleshooting is most effective when it follows the path a request takes: physical/link connectivity, local addressing, routing, name resolution, and finally the application service. This chapter uses read-only inspection and approved test destinations; it does not teach scanning unrelated devices.
 
+![Five local network troubleshooting layers from physical link through the named service](../illustrations/network-troubleshooting.svg)
+
 ## The basic path
 
 1. **Link:** Is Ethernet connected or is Wi-Fi associated with the approved access point?
