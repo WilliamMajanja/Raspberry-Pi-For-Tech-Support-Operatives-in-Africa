@@ -24,3 +24,5 @@ For platform-specific commands, say exactly where they were tested. Do not gener
 ## Pull requests
 
 Keep changes focused. Summarize the learning outcome, list pages changed, cite sources, and note the checks performed. For large proposed chapters, open an issue first so scope and source provenance can be discussed.
+
+For a proposed new capability, use the [RFF (Request for Feature) template](Hackathon/Feature_Requests_and_Change_Requests.md#3-rff-template--request-for-feature). For a change to existing behavior, use the [RFC-CR (Request for Change) template](Hackathon/Feature_Requests_and_Change_Requests.md#4-rfc-cr-template--request-for-change). These are local contribution records, not IETF RFCs; cite external RFCs by official number, title, status, and stable URL.

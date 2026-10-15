@@ -18,7 +18,7 @@ Example ID: `RFC-CR-2026-001`.
 
 ### CPIP project RFC specifications
 
-CPIP- also has files named `RFC-0001`, `RFC-0002`, and so on under its `specs/` directory. Those are **CPIP project design/specification records**, not IETF-published RFCs. Their identifier must not be used to claim IETF standardization or conformance. The pinned source snapshot reviewed for this edition labels 26 numbered CPIP proposal files `Draft`, targeting v6.0.0, while package metadata identifies v6.0.3. Treat those documents as proposals until the project records an implemented version and tests.
+CPIP- also has files named `RFC-0001`, `RFC-0002`, and so on under its `specs/` directory. Those are **CPIP project design/specification records**, not IETF-published RFCs. Their identifier must not be used to claim IETF standardization or conformance. The pinned baseline reviewed for this edition labels 26 numbered CPIP proposal files `Draft`, targeting v6.0.0, while package metadata identifies v6.0.3. The CPIP project now has separate [RFF](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/rff-0000-template.md) and [RFC-CR](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/rfc-cr-0000-template.md) templates and a [project-specification index](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/README.md). One implemented example is [CPIP RFC-CR-0001](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/rfc-cr-0001-rfc7168-url.md), which corrects the metadata link for RFC 7168. Treat the remaining draft specifications as proposals until the project records an implemented version and tests.
 
 ## 2. Status lifecycle
 

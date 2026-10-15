@@ -6,7 +6,7 @@ This walkthrough is designed for an **isolated, disposable test environment**. I
 
 CPIP-’s current package metadata requires Python 3.10 or later and declares required dependencies, including `cryptography`, `numpy`, and `pqcrypto`. Its build backend uses setuptools. Optional terminal UI and HSM features add more dependencies. ARM64 availability depends on the exact Python and package versions selected; check whether compatible wheels exist before attempting an install.
 
-Review the repository’s [README](https://github.com/WilliamMajanja/CPIP-/blob/master/README.md), [`pyproject.toml`](https://github.com/WilliamMajanja/CPIP-/blob/master/pyproject.toml), [`SECURITY.md`](https://github.com/WilliamMajanja/CPIP-/blob/master/SECURITY.md), and install/deployment scripts. Choose a specific tag or commit. Do not assume that the `master` branch has been audited or that its version badge matches every included manifest.
+Review the pinned repository [README](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/README.md), [`pyproject.toml`](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/pyproject.toml), [`SECURITY.md`](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/SECURITY.md), and install/deployment scripts. The cited source was CPIP 6.0.3; choose and record a specific tag or commit for any new work. Do not assume the moving `master` branch has been audited or that its version badge matches every included manifest.
 
 The following commands are a **generic Python project workflow**, not a claim that a particular CPIP- commit has been executed on this machine:
 

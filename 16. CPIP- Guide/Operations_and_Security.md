@@ -88,8 +88,8 @@ Stop the foreground server with `Ctrl-C`; for managed services, use the matching
 
 ## 9. References
 
-- [CPIP- security policy](https://github.com/WilliamMajanja/CPIP-/blob/master/SECURITY.md)
-- [CPIP- configuration and deployment documentation](https://github.com/WilliamMajanja/CPIP-/blob/master/README.md)
+- [CPIP- security policy at the reviewed source snapshot](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/SECURITY.md)
+- [CPIP- configuration and deployment documentation at the reviewed source snapshot](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/README.md)
 - [NIST FIPS publications](https://csrc.nist.gov/publications/fips)
 - [Debian security documentation](https://www.debian.org/security/)
 - [Kali documentation](https://www.kali.org/docs/)

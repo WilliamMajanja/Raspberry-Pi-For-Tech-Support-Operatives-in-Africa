@@ -44,9 +44,15 @@
 
 ## Protocol and learning-project references
 
-- [RFC 2324: Hyper Text Coffee Pot Control Protocol](https://www.rfc-editor.org/rfc/rfc2324)
-- [RFC 7168: HTCPCP-TEA](https://www.rfc-editor.org/rfc/rfc7168)
+- L. Masinter, [RFC 2324: Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0)](https://www.rfc-editor.org/rfc/rfc2324), 1 April 1998. The RFC Editor classifies it as **Informational**, not an Internet Standards Track specification.
+- I. Nazar, [RFC 7168: HTCPCP-TEA](https://www.rfc-editor.org/rfc/rfc7168), 1 April 2014. **Informational**; updates RFC 2324.
+- R. Fielding et al., [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110), STD 97, June 2022. Standards Track; includes general HTTP status-code semantics, including 418.
+- E. Rescorla, [RFC 9846: TLS 1.3](https://www.rfc-editor.org/rfc/rfc9846), 2026. Current TLS 1.3 Standards Track specification; supersedes RFC 8446.
+- S. Josefsson and I. Liusvaara, [RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)](https://www.rfc-editor.org/rfc/rfc8032), January 2017. IRTF **Informational**, not an Internet Standards Track specification.
+- A. Rundgren et al., [RFC 8785: JSON Canonicalization Scheme (JCS)](https://www.rfc-editor.org/rfc/rfc8785), June 2020. **Informational**; the FieldKit edition manifest uses its own constrained serialization and does not claim JCS conformance.
 - [CPIP- repository](https://github.com/WilliamMajanja/CPIP-)
+- [CPIP project RFF/RFC-CR/RFC specification index](https://github.com/WilliamMajanja/CPIP-/tree/d865e88/specs), pinned to the updated source snapshot. CPIP-local `RFC-NNNN` filenames are project design records, not IETF RFC publications.
+- [Field hackathon RFF and RFC-CR templates](../Hackathon/Feature_Requests_and_Change_Requests.md)
 - [HydraCTF repository](https://github.com/WilliamMajanja-zz/HydraCTF), cited as high-level inspiration for progressive flags only; no code or challenge text is reproduced.
 
 ## Public health, agriculture, and corporate accountability

@@ -2,15 +2,15 @@
 
 [CPIP-](https://github.com/WilliamMajanja/CPIP-) is William Majanja’s independent **Coffee Pot Internet Protocol** project. It is not an official Kali package or a preinstalled Kali tool. It builds on the deliberately whimsical HTCPCP standards for coffee and tea and describes additional networking, messaging, dashboard, and defensive features.
 
-This chapter is a reader’s guide to understanding and evaluating the project. It distinguishes the repository’s stated design goals from independently verified properties. The documentation checked for this edition is the project’s public `master` branch as viewed on **12 October 2026**; the repository’s README, package metadata, and release notes show version drift. For reproducibility, choose and record a specific reviewed commit before following version-dependent steps.
+This chapter is a reader’s guide to understanding and evaluating the project. It distinguishes repository-stated design goals from independently verified properties. The protocol/runtime smoke test used CPIP code commit `df93a5258a0d9e5297d30bd6b630f299969ec8bb`; the RFC/request records and package-reference correction were reviewed at documentation commit `d865e88` on **15 October 2026**. The repository’s README, package metadata, and release notes have version drift. For reproducibility, choose and record an exact reviewed commit before following version-dependent steps.
 
 ## What “zero dependency” means here
 
-This book is static Markdown and does not need a site generator or extra documentation packages. CPIP- itself is **not zero-dependency**: its current `pyproject.toml` declares Python 3.10+ plus required Python packages, including `cryptography`, `numpy`, and `pqcrypto`; setuptools is its build backend. The TUI, rich CLI, and HSM integrations add optional dependencies. Check the exact revision’s [`pyproject.toml`](https://github.com/WilliamMajanja/CPIP-/blob/master/pyproject.toml) before installing.
+This book is static Markdown and does not need a site generator or extra documentation packages. CPIP- itself is **not zero-dependency**: at the reviewed v6.0.3 source snapshot, `pyproject.toml` declares Python 3.10+ and required Python packages including `cryptography`, `numpy`, and `pqcrypto`; setuptools is its build backend. The TUI, rich CLI, and HSM integrations add optional dependencies. See the [pinned `pyproject.toml`](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/pyproject.toml) before installing.
 
 ## The project’s stated design goals
 
-The project’s [Blackpaper](https://github.com/WilliamMajanja/CPIP-/blob/master/blackpaper.md) describes goals including:
+The project’s [Blackpaper](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/blackpaper.md) describes goals including:
 
 - following the HTCPCP/HTCPCP-TEA vocabulary;
 - operating a logical mesh over multiple transport types;
@@ -25,6 +25,8 @@ These are **project-stated goals**, not evidence of effectiveness, safety, priva
 - [Understand the architecture, protocol, and project principles](Architecture_and_Principles.md)
 - [Set up and try a local-only instance](Local_Setup.md)
 - [Configure, operate, and assess security](Operations_and_Security.md)
+- [Distinguish IETF RFCs from CPIP RFF/RFC-CR/spec records](Architecture_and_Principles.md#ietf-rfcs-versus-cpip-project-rfcs)
+- [CPIP project RFF/RFC-CR templates and draft inventory](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/README.md)
 
 ## Safe starting point
 
@@ -35,10 +37,10 @@ Begin with a source review and a disposable, isolated environment. Do not expose
 ## Primary sources
 
 - [CPIP- repository](https://github.com/WilliamMajanja/CPIP-)
-- [README and quick start](https://github.com/WilliamMajanja/CPIP-/blob/master/README.md)
-- [Quick Start](https://github.com/WilliamMajanja/CPIP-/blob/master/QUICKSTART.md)
-- [Usage examples](https://github.com/WilliamMajanja/CPIP-/blob/master/EXAMPLES.md)
-- [Security policy](https://github.com/WilliamMajanja/CPIP-/blob/master/SECURITY.md)
-- [Blackpaper](https://github.com/WilliamMajanja/CPIP-/blob/master/blackpaper.md)
+- [README and quick start](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/README.md)
+- [Quick Start](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/QUICKSTART.md)
+- [Usage examples](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/EXAMPLES.md)
+- [Security policy](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/SECURITY.md)
+- [Blackpaper](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/blackpaper.md)
 - [RFC 2324: HTCPCP](https://www.rfc-editor.org/rfc/rfc2324)
 - [RFC 7168: HTCPCP-TEA](https://www.rfc-editor.org/rfc/rfc7168)

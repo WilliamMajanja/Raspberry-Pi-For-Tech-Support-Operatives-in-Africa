@@ -2,7 +2,7 @@
 
 ## 1. The protocol joke and the project
 
-RFC 2324 defines the Hyper Text Coffee Pot Control Protocol (HTCPCP); RFC 7168 extends it to tea. CPIP- uses that coffee-and-tea vocabulary as the basis for a software project. Despite the humorous protocol, the repository describes real network listeners, peer messaging, cryptographic operations, optional transports, a web interface, and active network defenses. Treat it as network software, not as a harmless toy merely because its protocol is playful.
+RFC 2324 defines the Hyper Text Coffee Pot Control Protocol (HTCPCP); RFC 7168 updates it with tea-brewing semantics.[^rfc2324][^rfc7168] Both are humorous **Informational** RFCs, not Internet Standards Track documents. CPIP- uses that vocabulary as the basis for a separate software project. Despite the playful protocol, its repository describes real network listeners, peer messaging, cryptographic operations, optional transports, a web interface, and active network defenses. Treat it as network software, not as a harmless toy.
 
 The project is independent of the Kali distribution. The word “CPIP” is also used by unrelated projects; here the trailing hyphen identifies William Majanja’s Coffee Pot Internet Protocol repository.
 
@@ -25,7 +25,11 @@ The table summarizes the project documentation; it is not an architecture audit.
 
 ### RFC fidelity
 
-Use the RFCs as protocol references, not as a security certification. An implementation can use valid method names while still having implementation bugs or unsafe network defaults. Check the relevant RFC section and test behavior against the current code.
+Use the RFCs as protocol references, not as a security certification. An implementation can use valid method names while still having implementation bugs or unsafe network defaults. Check the relevant RFC section and test behavior against the current code. RFC 9110 is the current standards-track HTTP Semantics specification; it describes the general status-code context for 418, while RFC 2324 supplies the humorous teapot definition.[^rfc9110]
+
+### IETF RFCs versus CPIP project RFCs
+
+CPIP’s `specs/rfc-0001-*.md` records use an internal project numbering scheme. At baseline commit `df93a5258a0d9e5297d30bd6b630f299969ec8bb` they were marked `Draft` and targeted v6.0.0, while package metadata identified v6.0.3. Later documentation updates add RFF/RFC-CR templates, an index, and a corrected RFC-7168 metadata link. These are **CPIP project records**, not IETF RFC publications and not evidence that a feature is present in a release. See the [pinned CPIP specification and request index](https://github.com/WilliamMajanja/CPIP-/blob/d865e88/specs/README.md).
 
 ### Multi-transport resilience
 
@@ -47,7 +51,11 @@ The project describes heuristic probe detection, HTTP 418 responses, and IP blac
 - A cryptographic primitive does not compensate for weak key management, unauthenticated peer identity, incorrect protocol composition, insecure defaults, or implementation defects.
 - Independent review of a particular source revision is required before making assurance claims.
 
+The book’s signed edition manifest uses Ed25519 via a maintained cryptography library. RFC 8032 describes EdDSA, including Ed25519, but is an IRTF Informational RFC rather than an Internet Standards Track RFC.[^rfc8032] The portal’s JSON representation is a versioned, project-defined deterministic format; it does **not** claim conformance with the JSON Canonicalization Scheme (JCS) in RFC 8785.[^rfc8785] The publisher fingerprint must be trusted independently of the downloaded manifest.
+
 For standards background, use the primary NIST publications and the project’s own security policy. Do not repeat stronger assurances than those sources justify.
+
+For a public CPIP Book Portal, terminate browser HTTPS at the reviewed reverse proxy and follow the current TLS 1.3 specification; do not confuse that transport protection with CPIP’s Coffee Cipher or the publisher’s detached edition signature.[^rfc9846]
 
 ## 4. Threat model and data questions
 
@@ -76,3 +84,17 @@ For a reproducible review, record:
 - deviations from upstream instructions.
 
 Prefer source links pinned to a commit in a published walkthrough. A link to `master` is convenient but changes over time.
+
+## Protocol and security references
+
+[^rfc2324]: L. Masinter, “Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0),” RFC 2324, 1 April 1998. The RFC’s Status of This Memo explicitly says it does not specify an Internet Standard. <https://www.rfc-editor.org/rfc/rfc2324> (accessed 15 October 2026).
+
+[^rfc7168]: I. Nazar, “The Hyper Text Coffee Pot Control Protocol for Tea Efflux Appliances (HTCPCP-TEA),” RFC 7168, 1 April 2014. Informational; updates RFC 2324. <https://www.rfc-editor.org/rfc/rfc7168> (accessed 15 October 2026).
+
+[^rfc9110]: R. Fielding, M. Nottingham, and J. Reschke, eds., “HTTP Semantics,” RFC 9110, STD 97, June 2022. Standards Track; see Section 15.5.19 for status 418. <https://www.rfc-editor.org/rfc/rfc9110> (accessed 15 October 2026).
+
+[^rfc9846]: E. Rescorla, “The Transport Layer Security (TLS) Protocol Version 1.3,” RFC 9846, Standards Track, 2026. It supersedes RFC 8446; use the current RFC Editor record for TLS 1.3. <https://www.rfc-editor.org/rfc/rfc9846> (accessed 15 October 2026).
+
+[^rfc8032]: S. Josefsson and I. Liusvaara, “Edwards-Curve Digital Signature Algorithm (EdDSA),” RFC 8032, IRTF Informational, January 2017. <https://www.rfc-editor.org/rfc/rfc8032> (accessed 15 October 2026).
+
+[^rfc8785]: A. Rundgren, B. Jordan, and S. Erdtman, “JSON Canonicalization Scheme (JCS),” RFC 8785, Informational, June 2020. FieldKit’s manifest format is versioned separately and does not claim JCS compliance. <https://www.rfc-editor.org/rfc/rfc8785> (accessed 15 October 2026).
