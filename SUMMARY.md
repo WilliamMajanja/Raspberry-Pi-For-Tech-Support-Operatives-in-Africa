@@ -68,6 +68,7 @@
 
 - [Field Informatics and Raspberry Pi Hackathon Handbook](Hackathon/Field_Hackathon_Handbook.md)
 - [Participant FieldKit Worksheet](Hackathon/Participant_FieldKit_Worksheet.md)
+- [Feature Requests and Requests for Change](Hackathon/Feature_Requests_and_Change_Requests.md)
 
 ## 8. CPIP-
 

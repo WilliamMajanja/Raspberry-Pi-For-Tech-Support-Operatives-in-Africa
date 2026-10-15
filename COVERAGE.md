@@ -13,7 +13,7 @@ This living edition is digital-first. Each PDF/EPUB is a dated snapshot; consult
 | Peace-support information systems | Support safe and accessible mine-action, child-protection, and WPS data workflows. | Orientation only; never replaces qualified specialists, mandates, or national standards. |
 | Informatics and public interest | Assess data provenance, privacy, validation, health claims, and corporate-accountability evidence. | Linked applications are not certified by this guide. |
 | FieldKit and cryptex | Use original offline support utilities and a printable multi-step learning puzzle. | Hashes and puzzle encodings do not establish authenticity or protect real secrets. The paper prop is non-locking; the OpenSCAD model has not been printed or fit-tested. |
-| Hackathon delivery | Run four role-scoped tracks with synthetic data, team roles, scoring, handover, and a CPIP edition flow. | A demo is not deployment approval. Official portal hosting and release-key provisioning require operator setup. |
+| Hackathon delivery | Run four role-scoped tracks with synthetic data, team roles, scoring, handover, RFF/RFC-CR change forms, and a CPIP edition flow. | A demo is not deployment approval. Official portal hosting and release-key provisioning require operator setup. |
 | Signed editions | Verify a detached publisher signature over the edition manifest and check the PDF/EPUB digests. | The CPIP Coffee Cipher is a separate portal credential, not a digital signature or proof of identity. Trust the signing key only through its independently published fingerprint. |
 
 ## Evidence labels

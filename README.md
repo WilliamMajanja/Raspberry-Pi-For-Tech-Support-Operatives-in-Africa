@@ -24,6 +24,7 @@ This guide is designed for technical support operatives working across Africa’
 - [Zero-dependency quizzes and CTF-style challenges](Challenges/README.md)
 - [Field Informatics and Raspberry Pi Hackathon Handbook](Hackathon/Field_Hackathon_Handbook.md)
 - [Participant FieldKit worksheet](Hackathon/Participant_FieldKit_Worksheet.md)
+- [Feature Request and Request-for-Change templates](Hackathon/Feature_Requests_and_Change_Requests.md)
 - [CPIP- user guide](16.%20CPIP-%20Guide/README.md)
 - [William Majanja’s Informatics portfolio](1.%20Introduction/William_Majanja.md)
 
@@ -38,7 +39,7 @@ This guide is designed for technical support operatives working across Africa’
 - **Public-interest Informatics:** the Muainishi application series, health-data safeguards, corporate-accountability evidence, and careful distinctions between GE crops, specific traits, pesticide exposures, cancer hazards, and exposure-specific risks.
 - **Security operations:** authorization, least privilege, verification, recovery, and safe assessment practices integrated into support work. Exercises use owned or explicitly authorized systems only.
 - **FieldKit:** original, offline-friendly support utilities with source code and tests; no external Python packages are required.
-- **Field hackathon:** four scoped build tracks, team and organizer guides, judging rubric, signed-edition verification, and printable participant worksheets.
+- **Field hackathon:** four scoped build tracks, team and organizer guides, judging rubric, signed-edition verification, printable participant worksheets, and RFF/RFC-CR proposal templates.
 - **Field visuals:** original support, networking, data-lifecycle, and Informatics-review diagrams embedded in the reading flow.
 - **Self-study challenges:** Base and Crypto tracks with quiz prompts and flags, solvable from the book and standard shell tools without installing challenge software.
 - **CPIP- and Informatics projects:** a version-aware guide to William Majanja’s Coffee Pot Internet Protocol and selected projects from both GitHub accounts.

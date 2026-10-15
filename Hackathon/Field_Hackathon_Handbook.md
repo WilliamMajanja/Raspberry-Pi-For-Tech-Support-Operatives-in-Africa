@@ -135,9 +135,12 @@ Do not include passwords, API tokens, production private keys, exact sensitive c
 
 Assign an owner to each follow-up. Separate “demo passed” from “ready for deployment”; the latter needs operational ownership, policy review, maintenance capacity, secure hosting, and realistic field testing. Destroy disposable test accounts, handle data and hardware according to the retention plan, and publish an accessible summary with corrections. Ask participants what excluded them or made participation unsafe and make changes before the next event.
 
+When a useful improvement needs more than a hackathon demo, submit an [RFF for a new feature or RFC-CR for a change to existing behavior](Feature_Requests_and_Change_Requests.md). A completed form enters review; it does not authorize a production rollout.
+
 ## References and related chapters
 
 - [Participant FieldKit worksheet](Participant_FieldKit_Worksheet.md)
+- [RFF and RFC-CR proposal templates](Feature_Requests_and_Change_Requests.md)
 - [Authorized security assessment](../Raspberry%20Pi%20Field%20Support/Security_Assessment_Playbook.md)
 - [Field data stewardship](../Peace%20Operations%20Field%20Support/Data_Stewardship_and_Offline_Systems.md)
 - [Muainishi prototype review](../Informatics%20and%20Public%20Interest/Muainishi_Project_Review.md)
